@@ -718,8 +718,8 @@ import { mapActions, mapState, mapGetters } from "vuex";
               }
               var tData = JSON.stringify({
                 username:username,
-                model_name:this.modelName,
-                test_data:this.test_data
+                modelName:this.modelName,
+                testData:this.test_data
               })
               axios.post(apiUrl.numbersTestModel,tData,{
                 headers:{"Content-Type": "application/json;charset=utf-8"}

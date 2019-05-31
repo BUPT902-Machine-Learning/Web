@@ -725,35 +725,30 @@ import { mapActions, mapState, mapGetters } from "vuex";
       
       confirmTestSubmit(){
         /** 模型测试提交函数 */
-        if(this.isSuccess == false){
-          alert("请先进行模型训练");
-        }
-        else{
-          this.$refs["valueForm2"].validate((valid) => {
-            if (valid) {
-              this.test_data = [];
-              var username = this.account;
-              for (var item of this.valueForm2.valueData){
-                this.test_data.push(item.inputValue);
-              }
-              var tData = JSON.stringify({
-                username:username,
-                model_name:this.modelName,
-                test_data:this.test_data
-              })
-              axios.post(apiUrl.numbersTestModel,tData,{
-                headers:{"Content-Type": "application/json;charset=utf-8"}
-              })
-                .then(function (response) {
-                  this.test_output = response.data.prediction;
-                  this.test_time = response.data.time;
-                }.bind(this))
-                .catch(function (error) {
-                  console.log(error);
-                });
+        this.$refs["valueForm2"].validate((valid) => {
+          if (valid) {
+            this.test_data = [];
+            var username = this.account;
+            for (var item of this.valueForm2.valueData){
+              this.test_data.push(item.inputValue);
             }
-          });
-        }
+            var tData = JSON.stringify({
+              username:username,
+              modelName:this.modelName,
+              testData:this.test_data
+            })
+            axios.post(apiUrl.numbersTestModel,tData,{
+              headers:{"Content-Type": "application/json;charset=utf-8"}
+            })
+              .then(function (response) {
+                this.test_output = response.data.prediction;
+                this.test_time = response.data.time;
+              }.bind(this))
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        });
       },
 
       submitData(){
