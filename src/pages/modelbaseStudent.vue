@@ -335,7 +335,26 @@ export default {
               self.$router.push({name:'numbersModelEdit',params:{modelName:row.ModelName}});
             }
             else{
-              self.$router.push({name:'imageModelEdit',params:{modelName:row.ModelName}});
+              var uData = JSON.stringify({
+                userName:self.account,
+                modelName:row.ModelName
+              })
+              axios.post(apiUrl.StatusCheck,uData,{
+                headers:{"Content-Type": "application/json;charset=utf-8"}
+              })
+                .then(function (response) {
+                  var temp = response.data;
+                  if(temp == 0){
+                    var modelStatus = "未训练";
+                  }else if(temp == 1){
+                    var modelStatus = "训练中";
+                  }else{
+                    var modelStatus = "已训练";
+                  }
+                  self.$router.push({name:'imageModelEdit',params:{userName:self.account,modelName:row.ModelName,modelStatus:modelStatus}});
+                }).catch(function (error) {
+                console.log(error);
+              });
             }
         },
         deleteModel(row){
