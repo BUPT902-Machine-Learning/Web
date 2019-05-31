@@ -13,7 +13,7 @@
                         我的模型库
                         </li>
                     </ul>
-                </div>  
+                </div>
             </div>
         </div>
 
@@ -180,6 +180,8 @@ export default {
         }).catch(function (error) {
             console.log(error);
         });
+
+        /** 学生获取普通模型 */
         var uData = JSON.stringify({
             username:self.account,
             class_no:self.classId
@@ -187,6 +189,7 @@ export default {
         axios.post(apiUrl.stuGetModels,uData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
+            /** 将获取的学生的所有模型信息显示在table中 */
             var tmpData = response.data.my_models;
             var tmp_count = 1;
             tmpData.forEach(element => {
@@ -200,7 +203,7 @@ export default {
                 addModel.UpdateTime = element.data_update;
                 self.studentData.push(addModel);
             });
-
+            /** 将学生所在班级的教师的模型信息显示在table中 */
             tmpData = response.data.tech_models;
             tmp_count = 1;
             tmpData.forEach(element => {
@@ -223,7 +226,7 @@ export default {
             username:self.account,
             class_no:self.classId
         })
-        axios.post(apiUrl.stuGetModels,uData,{    
+        axios.post(apiUrl.stuGetCreateModel,uData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
             if(response.data != "此学生未加入任何班级"){

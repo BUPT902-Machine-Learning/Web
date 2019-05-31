@@ -176,12 +176,12 @@ export default {
         }).catch(function (error) {
             console.log(error);
         });
+
+        /** 教师获取普通模型 */
         var vData = JSON.stringify({
             username:self.account,
             class_no:self.classId
         });
-
-        /** 教师获取普通模型 */
         axios.post(apiUrl.teachGetModels,vData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
@@ -200,7 +200,7 @@ export default {
                 addModel.UpdateTime = element.data_update;
                 self.teacherData.push(addModel);
             });
-            /** 将获取的教师所在班级的学生的模型信息显示在table中 */
+            /** 将教师所在班级的学生的模型信息显示在table中 */
             tmpData = response.data.stu_models;
             tmp_count = 1;
             tmpData.forEach(element => {
