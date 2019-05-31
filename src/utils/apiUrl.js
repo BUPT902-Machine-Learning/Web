@@ -17,6 +17,7 @@ export const apiUrl = {
   textKnnTest: "/api/text/knnTest/",                                       //KNN测试
   textCnnTest: "/api/text/cnnTest/",                                       //CNN测试
   textRnnTest: "/api/text/rnnTest/",                                       //RNN测试
+  textEditModel: "/api/text/editModel/",
   textTestModel: "/api/text/testModel/",                                   //向已训练的模型发送测试请求
   textOptimalTrain: "/api/text/optimalTrain/",
 
@@ -24,6 +25,7 @@ export const apiUrl = {
   // editModels: "/api/editModels/",                                 //修改我的模型
   //numbers
   getValue:"/api/ImageClassifier/uploadImg/",
+  numbersEditModel: "/api/numbers/editModel/",
   numbersTestModel: "/api/numbers/testModel/",
   numbersOptimalTrain: "/api/numbers/optimalTrain/",
   numbersValueSet: "/api/numbers/valueSet/",

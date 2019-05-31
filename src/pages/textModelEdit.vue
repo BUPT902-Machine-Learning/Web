@@ -177,6 +177,7 @@ import { apiUrl } from '../utils/apiUrl';
     },
     mounted(){
       const self = this;
+      this.modelName = this.$route.params.modelName
       var csrfTokenName = "csrftoken=";
       var tokenName = "token=";
       var userName = "username=";
@@ -237,7 +238,7 @@ import { apiUrl } from '../utils/apiUrl';
         username:self.account,
         modelName:self.modelName
       })
-      axios.post(apiUrl.editModels,uData,{    
+      axios.post(apiUrl.textEditModel,uData,{    
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.isPublic == '1'){

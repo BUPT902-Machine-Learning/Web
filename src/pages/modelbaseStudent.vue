@@ -328,7 +328,15 @@ export default {
         },
         modelEdit(row) {
             const self = this;
-            self.$router.push({name:'modelEdit',params:{modelName:row.ModelName}});
+            if (row.DataType == "文本"){
+              self.$router.push({name:'textModelEdit',params:{modelName:row.ModelName}});
+            }
+            else if (row.DataType == "数字"){
+              self.$router.push({name:'numbersModelEdit',params:{modelName:row.ModelName}});
+            }
+            else{
+              self.$router.push({name:'imageModelEdit',params:{modelName:row.ModelName}});
+            }
         },
         deleteModel(row){
             //提交训练数据确认函数

@@ -15,7 +15,10 @@ const numbersValueSetPage = resolve => require(["src/pages/numbersValueSet"], re
 
 const coTrainStuTextPage = resolve => require(["src/pages/coTrainStuText"], resolve);
 const coTrainTeaTextPage = resolve => require(["src/pages/coTrainTeaText"], resolve);
-const modelEditPage = resolve => require(["src/pages/modelEdit"], resolve);
+
+const textModelEditPage = resolve => require(["src/pages/textModelEdit"], resolve);
+const numbersModelEditPage = resolve => require(["src/pages/numbersModelEdit"], resolve);
+
 const coTrainEditTextPage = resolve => require(["src/pages/coTrainEditText"], resolve);
 const modelTestPage = resolve => require(["src/pages/modelTest"], resolve);
 
@@ -50,10 +53,15 @@ const router = new VueRouter({
 			component:imageModelTestPage
 		},
 		{
-			name: 'modelEdit',
-			path: '/modelEdit/:modelName',
-			component:modelEditPage
+			name: 'textModelEdit',
+			path: '/textModelEdit/:modelName',
+			component:textModelEditPage
 		},
+    {
+      name: 'numbersModelEdit',
+      path: '/numbersModelEdit/:modelName',
+      component:numbersModelEditPage
+    },
 		{
 			name: 'trainingImage',
 			path: '/trainingImage/:modelName',
