@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-      
+
     <div class="app-head">
       <div class="app-head-inner">
         <div class="head-nav">
@@ -12,9 +12,9 @@
             <li class="nav-pile">{{this.account}}</li>
             <li class="nav-pile" @click="myModelBase()">
               我的模型库
-              </li>
+            </li>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
 
@@ -22,75 +22,112 @@
       <div class="model_part">
         <img class = "model_pic" src = '../assets/steam.png'  style="width:80px;height:80px;">
         <span style="font-size:25px">{{modelName}}</span><span style="font-size:18px">({{trainStatus}})</span>
-      </div>
-    </div>
-    
-    <div class="top_train_block">
-        <el-row type="flex" class="row-bg" justify="end">
-          <el-button type="primary" @click="addLabel()"">添加标签</el-button>
-          <el-button type="success" @click="submitData()">提交并训练</el-button>
-        </el-row>
-        
-        <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" ref="addType">
-          <el-form :model="addDev" ref="addType">
-            <el-row>
-              <el-form-item label="标签名称：">
-                <el-input v-model="addDev.label"></el-input>
-              </el-form-item>
-            </el-row>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="addLabelCancel()">取 消</el-button>
-            <el-button type="primary" @click="addLabelConfirm()">确 定</el-button>
-          </div>
-        </el-dialog>
+        <div class="add_label_button">
+          <el-row type="flex" class="row-bg" justify="end">
+            <el-button type="primary" @click="addLabel()">添加标签</el-button>
+            <el-button type="success" @click="submitData()">提交并训练</el-button>
+          </el-row>
 
-        <!-- 动态生成多个标签项 -->
-        <div class="trainData" v-for="(item, index) in tableData" :key='index'>
-          <el-form>
-
-            <el-form-item label="标签名：" class="labelData">
-              <span style="font-size:25px">{{item.label}}</span>
-              <el-button size="mini" type="success" @click="deleteLabel(item)">删除标签</el-button>
-            </el-form-item>
-            
-            <el-form-item
-              label="训练样本："
-              class="trainSample">
-                <el-upload
-                  name="img"
-                  class="upload-demo"
-                  action="http://127.0.0.1:8001/api/ImageClassifier/uploadImg/"
-                  :show-file-list=true
-                  :on-success="handleSuccess"
-                  :on-preview="handlePreview"
-                  :on-error="handleErr"
-                  :on-remove="handleRemove"
-                  :before-remove="beforeRemove"
-                  :before-upload="beforeUpload"
-                  :limit="10"
-                  :on-exceed="handleExceed"
-                  :file-list="fileList"
-                  :data="uploadData"
-                  list-type="picture"
-                  multiple
-                  align="left">
-                    <div class="selectImg" align="left"><el-button type="primary" @click="selectImg(item)">上传训练图片</el-button></div>
-                </el-upload>
-              </el-form-item>
-          </el-form>
+          <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" ref="addType">
+            <el-form :model="addDev" ref="addType">
+              <el-row>
+                <el-form-item label="标签名称：">
+                  <el-input v-model="addDev.label"></el-input>
+                </el-form-item>
+              </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="addLabelCancel()">取 消</el-button>
+              <el-button type="primary" @click="addLabelConfirm()">确 定</el-button>
+            </div>
+          </el-dialog>
         </div>
       </div>
+    </div>
+
+    <div class="mid_block">
+      <el-form :model="ruleForm" :rules="rules1" ref="ruleForm" label-width="140px">
+        <el-form-item label="模型权限" prop="isPublic">
+          <el-select v-model="ruleForm.isPublic" placeholder="请选择模型权限" id="isPublic"  style="width:200px">
+            <el-option label="公开" value=1></el-option>
+            <el-option label="隐藏" value=0></el-option>
+          </el-select>
+          <span class="notes">选择选择模型权限是否公开</span>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="train_container">
+      <div class="label_container" v-for="(item, index) in tableData" :key='index'>
+        <div class="delete_label_button">
+          <el-button type="info" size="mini" round @click="deleteLabel(item)">X</el-button>
+        </div>
+
+        <div class="label_header">
+          <span style="font-size:25px">{{item.label}}</span>
+        </div>
+
+        <div class="image_preview">
+          <div class="image" v-for="(content, index2) in item.contents" :key="index2">
+            <img class="image_size" :src="content" alt="图片"/>
+          </div>
+        </div>
+
+        <div class="add_image_button">
+          <el-upload
+            name="img"
+            class="upload-demo"
+            action="http://127.0.0.1:8082/api/image/uploadImg/"
+            :show-file-list=false
+            :on-success="handleSuccess"
+            :on-preview="handlePreview"
+            :on-error="handleErr"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :before-upload="beforeUpload"
+            :limit="10"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+            :data="uploadData"
+            list-type="picture"
+            multiple
+            align="left">
+            <div class="selectImg" align="left"><el-button type="primary" @click="selectImg(item)">添加图片</el-button></div>
+          </el-upload>
+          <!-- <el-upload
+            class="uploadImg"
+            action="/api/ImageClassifier/uploadImg/"
+            :show-file-list=false
+            :on-success="handleSuccess"
+            :on-error="handleErr"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="10"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+            align="left">
+              <el-button type="success" @click="addImage()">添加图片</el-button>
+          </el-upload> -->
+        </div>
+
+        <div class="add_label">
+
+        </div>
+
+      </div>
+    </div>
+
 
 
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import qs from 'qs'
-import { apiUrl } from '../utils/apiUrl';
-import coTrainStuTextVue from './coTrainStuText.vue';
+  import axios from 'axios'
+  import qs from 'qs'
+  import { apiUrl } from '../utils/apiUrl';
+  import coTrainStuTextVue from './coTrainStuText.vue';
   export default {
     data() {
       return {
@@ -101,7 +138,8 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         role: '',                 //用户身份
         csrfToken: '',            //CSRF标记
         modelbasePath: '',        //我的模型库跳转路径
-        tableData: [],            //存储该模型所有标签、样本信息
+        tableData: [
+        ],            //存储该模型所有标签、样本信息
         addDev: {                 //存储某一标签的训练数据
           label: '',                //标签名
           contents:[]               //标签所属的样本名
@@ -116,7 +154,10 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         },
         modelName: '',             //模型名
         outputData: [],            //存放训练模型的输出结果
-        trainStatus: '未训练',     //模型训练状态    
+        trainStatus: '未训练',     //模型训练状态
+        ruleForm:{
+          isPublic:''        //模型是否公开
+        }
         //isChange: 0,            //全局变量，用于判断数据表格是否发生变动
       }
     },
@@ -135,24 +176,24 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         var c = ca[i];
         while (c.charAt(0) == ' ') c = c.substring(1);
         if (c.indexOf(tokenName) != -1){
-            if(c.indexOf(csrfTokenName) != -1){
-                self.csrfToken = c.substring(csrfTokenName.length, c.length);
-            }
-            else{
-                self.token = c.substring(tokenName.length, c.length);
-            }
-        }  
+          if(c.indexOf(csrfTokenName) != -1){
+            self.csrfToken = c.substring(csrfTokenName.length, c.length);
+          }
+          else{
+            self.token = c.substring(tokenName.length, c.length);
+          }
+        }
         if(c.indexOf(userName) != -1){
-            self.account = decodeURIComponent(c.substring(userName.length, c.length));
+          self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
         if(c.indexOf(sessionId) != -1){
-            self.sessionId = c.substring(sessionId.length, c.length);
+          self.sessionId = c.substring(sessionId.length, c.length);
         }
         if(c.indexOf(classId) != -1){
-            self.classId = c.substring(classId.length, c.length);
+          self.classId = c.substring(classId.length, c.length);
         }
         if(c.indexOf(role) != -1){
-            self.role = c.substring(role.length, c.length);
+          self.role = c.substring(role.length, c.length);
         }
       }
 
@@ -170,7 +211,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         sessionid:self.sessionId,
         class_no:self.classId
       })
-      axios.post(apiUrl.loginCheck,uData,{    
+      axios.post(apiUrl.loginCheck,uData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.code != 1){
@@ -179,13 +220,13 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
 
       var modelCreateData = JSON.stringify({
         userName:self.account,
-        modelName:self.modelName,
+        modelName:self.modelName
       })
-      axios.post(apiUrl.createImgModel,modelCreateData,{    
+      axios.post(apiUrl.createImgModel,modelCreateData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response == "Create Image Model Success!"){
@@ -196,10 +237,16 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
     },
 
     methods: {
+      addImage(){
+        //1.发送请求上传图片
+
+        //2.显示缩略图
+        //3.提示上传成功
+      },
       myModelBase(){
         /** 我的模型库跳转函数 */
         const self = this;
@@ -245,17 +292,17 @@ import coTrainStuTextVue from './coTrainStuText.vue';
       },
       deleteLabel(item){
         this.$confirm(`确定移除 标签： ${ item.label }？`, '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => { 
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
           // 向Django后端发送物理删除请求，将该标签的文件夹删除，并删除数据库中该文件夹所有的内容
           var uData = JSON.stringify({
             modelName: this.modelName,
             label: item.label
           })
-          axios.post(apiUrl.deleteLabel,uData,{    
+          axios.post(apiUrl.deleteLabel,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
@@ -280,13 +327,6 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         // 将逻辑删除标记、文件名跟随图片文件传送到Django后端
         this.uploadData.delete = '0';
         this.uploadData.imgName = file.name;
-        // 将上传的图片信息（文件名）存储在tableData中
-        for(var item of this.tableData){
-          if(item.label == this.uploadData.label){
-            item.contents.push(this.uploadData.imgName);
-            break;
-          }
-        }
       },
 
       handleSuccess(response, file, fileList){
@@ -295,7 +335,13 @@ import coTrainStuTextVue from './coTrainStuText.vue';
           fileList.splice(fileList.indexOf(file),1);
         }
         else {
-          alert("上传成功");
+          // 将上传的图片信息（文件路径）存储在tableData中
+          for(var item of this.tableData){
+            if(item.label == this.uploadData.label){
+              item.contents.push(file.url);
+              break;
+            }
+          }
         }
         self.uploadData = {};
       },
@@ -321,7 +367,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         formData.append('delete', '1');
         formData.append('label', deleteLabel);
         formData.append('imgName', file.name);
-        axios.post(apiUrl.deleteImg,formData,{    
+        axios.post(apiUrl.deleteImg,formData,{
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
@@ -334,7 +380,6 @@ import coTrainStuTextVue from './coTrainStuText.vue';
 
       submitData(){
         /** 提交并训练函数 */
-        console.log(this.tableData);
         var labels = [];
         for(var item of this.tableData){
           labels.push(item.label);
@@ -349,33 +394,81 @@ import coTrainStuTextVue from './coTrainStuText.vue';
           var uData = JSON.stringify({
             userName:this.account,
             modelName:this.modelName,
-            label:labels
+            label:labels,
+            publicStatus:this.ruleForm.isPublic
           })
-          axios.post(apiUrl.trainImgModel,uData,{    
+          axios.post(apiUrl.trainImgModel,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             console.log(response.data)
           }).catch(function (error) {
             console.log(error);
           });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消提交'
-            });
-          }); 
-        }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消提交'
+          });
+        });
+      }
     }
   }
 
 </script>
 
 <style>
-  .trainData{
-    margin-top: 0px;
+  .delete_label_button{
+    float: left;
   }
-  .input-file{
-    margin-top: 0px
+  .image_size{
+    max-height: 60px;
+    max-height: 100px;
+  }
+  .image{
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 10px;
+    float:left;
+  }
+  .image_preview{
+    margin-top: 5%;
+    height: 510px;
+    overflow-y:scroll;
+  }
+  .add_label_button{
+    margin-left: 100%;
+  }
+  .add_image_button{
+    margin-top: 610px;
+    margin-left: 40%;
+    position: absolute;
+  }
+  .train_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: calc(100vh - 230px);
+    min-height: 200px;
+  }
+  .label_container {
+    flex: 1;
+    flex-grow: 1;
+    border: .8em #777 solid;
+    border-radius: 2em;
+    margin: 1em;
+    min-width: 25em;
+    max-width: 47%;
+    max-height: calc(100% - 25px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .label_header {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    height: 1em;
+    float: left;
   }
   .model_part{
     margin-top: -120px;
@@ -387,21 +480,5 @@ import coTrainStuTextVue from './coTrainStuText.vue';
   }
   .model_pic{
     margin-top: 130px;
-  }
-  .notes{
-    margin-left: 10px;
-    color:#999999;
-  }
-  .top_train_block{
-    margin-top: 30px;
-    margin-left: 130px;
-  }
-  .foot_block{
-    margin-top: 30px;
-    margin-left: 130px;
-  }
-  .test_block{
-    margin-top: 30px;
-    margin-left: 130px;
   }
 </style>

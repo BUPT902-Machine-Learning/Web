@@ -13,7 +13,7 @@
               我的模型库
               </li>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="table_container">
@@ -91,7 +91,7 @@ import { apiUrl } from '../utils/apiUrl';
                 else{
                     self.token = c.substring(tokenName.length, c.length);
                 }
-            }  
+            }
             if(c.indexOf(userName) != -1){
                 self.account = decodeURIComponent(c.substring(userName.length, c.length));
             }
@@ -123,7 +123,7 @@ import { apiUrl } from '../utils/apiUrl';
             }
         }).catch(function (error) {
             console.log(error);
-        });  
+        });
     },
     methods:{
       myModelBase(){
@@ -186,7 +186,7 @@ import { apiUrl } from '../utils/apiUrl';
                     window.location.reload();
                   }
                   else{
-                    if(self.firstForm.trainDataType == 'text') {
+                    if(self.firstForm.trainModelType == 'share') {
                       if(self.firstForm.trainDataType == 'text'){
                         self.$router.push({name:'coTrainTeaText',params:{modelName:name}});
                       }
@@ -202,7 +202,7 @@ import { apiUrl } from '../utils/apiUrl';
                         self.$router.push({name:'trainingText',params:{modelName:name}});
                       }
                       else if(self.firstForm.trainDataType == 'numbers'){
-                        self.$router.push({name:'trainingNumbers',params:{modelName:name}});
+                        self.$router.push({name:'numbersValueSet',params:{modelName:name}});
                       }
                       else{
                         self.$router.push({name:'trainingImage',params:{modelName:name}});

@@ -28,22 +28,24 @@ export const apiUrl = {
   numbersEditModel: "/api/numbers/editModel/",
   numbersTestModel: "/api/numbers/testModel/",
   numbersOptimalTrain: "/api/numbers/optimalTrain/",
-  //image
-  upLoadImg: "/api/ImageClassifier/uploadImg/",                                   //上传训练图片样本
-  deleteImg: "/api/ImageClassifier/deleteImg/",                                   //（逻辑）删除训练图片样本
-  deleteLabel: "/api/ImageClassifier/deleteLabel/",                               //（物理）删除标签
-  createImgModel: "/api/ImageClassifier/createImageModel/",                       //创建模型（只存储模型名等基本信息）
-  deleteImgModel: "/api/ImageClassifier/deleteImageModel/",                       //删除模型（删除该模型下的所有信息，包括标签，图片文件等）
-  trainImgModel: "/api/ImageClassifier/trainImageModel/",                         //训练模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
-  testImgModel: "/api/ImageClassifier/testImageModel/",                           //测试模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
-
-  techGetImgModel: "/api/ImageClassifier/techGetImgModel/",                       //教师获取图像模型 1.获取自己创建的非合作图像模型 2.获取所在班级学生创建的公开图像模型
-  techGetCoImgModel: "/api/ImageClassifier/techGetCoImgModel/",                   //教师获取图像合作模型
-  stuGetImgModel: "/api/ImageClassifier/stuGetImgModel/",                         //学生获取图像模型 1.获取自己创建的非合作图像模型 2.获取所在班级教师创建的公开非合作图像模型
-  stuGetCoImgModel: "/api/ImageClassifier/stuGetCoImgModel/",                     //学生获取图像合作模型
-
-  StatusCheck: "/api/ImageClassifier/StatusCheck/",                                //获取模型训练状态
   numbersValueSet: "/api/numbers/valueSet/",
+  //image
+  upLoadImg: "/api/image/uploadImg/",                                   //上传训练图片样本
+  deleteImg: "/api/image/deleteImg/",                                   //（逻辑）删除训练图片样本
+  deleteLabel: "/api/image/deleteLabel/",                               //（物理）删除标签
+  createImgModel: "/api/image/createImageModel/",                       //创建模型（只存储模型名等基本信息）
+  deleteImgModel: "/api/image/deleteImageModel/",                       //删除模型（删除该模型下的所有信息，包括标签，图片文件等）
+  trainImgModel: "/api/image/trainImageModel/",                         //训练模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
+  testImgModel: "/api/image/testImageModel/",                           //测试模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
+  StatusCheck: "/api/image/StatusCheck/",                                //获取模型训练状态
+
+  //techGetImgModel: "/api/ImageClassifier/techGetImgModel/",                       //教师获取图像模型 1.获取自己创建的非合作图像模型 2.获取所在班级学生创建的公开图像模型
+  //techGetCoImgModel: "/api/ImageClassifier/techGetCoImgModel/",                   //教师获取图像合作模型
+  //stuGetImgModel: "/api/ImageClassifier/stuGetImgModel/",                         //学生获取图像模型 1.获取自己创建的非合作图像模型 2.获取所在班级教师创建的公开非合作图像模型
+  //stuGetCoImgModel: "/api/ImageClassifier/stuGetCoImgModel/",                     //学生获取图像合作模型
+
+
+
   //cooperation
   createModel: "/api/cooperation/createModel/",                   //发布合作模型（仅教师）
   stuGetCreateModel: "/api/cooperation/stuGetCreateModel/",          //学生获取合作模型信息
