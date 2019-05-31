@@ -24,7 +24,7 @@ const imageModelEditPage = resolve => require(["src/pages/imageModelEdit"], reso
 const router = new VueRouter({
 	mode: 'hash',
 	routes: [
-		{ 
+		{
 			name: '/',
 			path: '/',
 			component:modelbaseStudentPage
@@ -92,17 +92,17 @@ const router = new VueRouter({
 		{
 			name: 'coTrainTeaText',
 			path: '/coTrainTeaText/:modelName',
-			component: coTrainTeaTextPage 
+			component: coTrainTeaTextPage
 		},
 		{
 			name: 'coTrainEditText',
 			path: '/coTrainEditText/:modelName',
-			component: coTrainEditTextPage 
+			component: coTrainEditTextPage
 		},
 		{
 			name: 'modelTest',
 			path: '/modelTest/:userName/:modelName',
-			component: modelTestPage 
+			component: modelTestPage
 		},
     {
       name: 'numbersValueSet',

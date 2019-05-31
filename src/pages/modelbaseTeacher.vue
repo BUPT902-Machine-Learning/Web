@@ -13,7 +13,7 @@
                         我的模型库
                         </li>
                     </ul>
-                </div>  
+                </div>
             </div>
         </div>
         <div class="my_model_block">
@@ -31,7 +31,7 @@
                 <el-table-column property="BuildTime" label="模型创建时间" align='center'></el-table-column>
 
                 <el-table-column property="UpdateTime" label="更新时间" align='center'></el-table-column>
-                
+
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="testModel(scope.row)">测试模型</el-button>
@@ -63,7 +63,7 @@
                 <el-table-column property="BuildTime" label="模型创建时间" align='center'></el-table-column>
 
                 <el-table-column property="UpdateTime" label="更新时间" align='center'></el-table-column>
-                
+
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="testModel(scope.row)">测试模型</el-button>
@@ -86,7 +86,7 @@
                 <el-table-column property="BuildTime" label="模型创建时间" align='center'></el-table-column>
 
                 <el-table-column property="UpdateTime" label="更新时间" align='center'></el-table-column>
-                
+
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="cooperateTurntoScratch(scope.row)">应用模型</el-button>
@@ -120,7 +120,7 @@ export default {
         token: '',              //是否登录标识
         sessionId: '',          //用来存储会话信息
         classId: '',            //用户所在班级号
-        csrfToken: ''           //CSRF标识  
+        csrfToken: ''           //CSRF标识
         }
     },
     mounted: function () {
@@ -142,7 +142,7 @@ export default {
                 else{
                     self.token = c.substring(tokenName.length, c.length);
                 }
-            }  
+            }
             if(c.indexOf(userName) != -1){
                 self.account = decodeURIComponent(c.substring(userName.length, c.length));
             }
@@ -164,7 +164,7 @@ export default {
             sessionid:self.sessionId,
             class_no:self.classId
         })
-        
+
         axios.post(apiUrl.loginCheck,uData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
@@ -175,16 +175,17 @@ export default {
             }
         }).catch(function (error) {
             console.log(error);
-        }); 
+        });
         var vData = JSON.stringify({
             username:self.account,
             class_no:self.classId
         });
 
-        /** 教师获取普通文本模型 */
+        /** 教师获取普通模型 */
         axios.post(apiUrl.teachGetModels,vData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
+            console.log(response);
             /** 将获取的教师的所有模型信息显示在table中 */
             var tmpData = response.data.my_models;
             var tmp_count = 1;
@@ -206,7 +207,7 @@ export default {
                 element.forEach(StuElement =>{
                     var addModel = {};
                     addModel.ModelName = StuElement.cn_name;
-                    addModel.StudentName = StuElement.user_name; 
+                    addModel.StudentName = StuElement.user_name;
                     addModel.UsingAlgorithm = StuElement.algorithm;
                     addModel.DataType = StuElement.data_type;
                     addModel.BuildTime = StuElement.data_create;
@@ -218,46 +219,7 @@ export default {
             });
         }).catch(function (error) {
             console.log(error);
-        }); 
-
-        /** 教师获取普通图像模型 */
-        axios.post(apiUrl.techGetImgModel,vData,{    
-            headers:{"Content-Type": "application/json;charset=utf-8"}
-        }).then(function (response) {
-            /** 将获取的教师的所有模型信息显示在table中 */
-            var tmpData = response.data.my_models;
-            var tmp_count = 1;
-            tmpData.forEach(element => {
-                var addModel = {};
-                addModel.Number = tmp_count;
-                tmp_count += 1;
-                addModel.ModelName = element.cn_name;
-                addModel.UsingAlgorithm = element.algorithm;
-                addModel.DataType = element.data_type;
-                addModel.BuildTime = element.data_create;
-                addModel.UpdateTime = element.data_update;
-                self.teacherData.push(addModel);
-            });
-            /** 将获取的教师所在班级的学生的模型信息显示在table中 */
-            tmpData = response.data.stu_models;
-            tmp_count = 1;
-            tmpData.forEach(element => {
-                element.forEach(StuElement =>{
-                    var addModel = {};
-                    addModel.ModelName = StuElement.cn_name;
-                    addModel.StudentName = StuElement.user_name; 
-                    addModel.UsingAlgorithm = "VGG16-SVM";
-                    addModel.DataType = "图像";
-                    addModel.BuildTime = StuElement.data_create;
-                    addModel.UpdateTime = StuElement.data_update;
-                    addModel.Number = tmp_count;
-                    tmp_count += 1;
-                    self.studentData.push(addModel);
-                });
-            });
-        }).catch(function (error) {
-            console.log(error);
-        }); 
+        });
 
         /** 将获取的教师创建的合作模型信息显示在table中 */
         var uData = JSON.stringify({
@@ -285,29 +247,7 @@ export default {
         });
 
         /** 将获取的教师创建的合作图像模型信息显示在table中 */
-        // var uData = JSON.stringify({
-        //     teacher_name:this.account
-        // })
-        // axios.post(apiUrl.techGetCoImgModel,uData,{    
-        //     headers:{"Content-Type": "application/json;charset=utf-8"}
-        // }).then(function (response) {
-        //     var tmpData = response.data;
-        //     var tmp_count = 1;
-        //     tmpData.forEach(element => {
-        //             var addModel = {};
-        //             addModel.ModelName = element.cn_name;
-        //             addModel.TeacherName = element.teacher; //此处添加了从后端获取合作模型的创建者的名字
-        //             addModel.UsingAlgorithm = element.algorithm;
-        //             addModel.DataType = "图像";
-        //             addModel.BuildTime = element.data_create;
-        //             addModel.UpdateTime = element.data_update;
-        //             addModel.Number = tmp_count;
-        //             tmp_count += 1;
-        //             self.cooperateData.push(addModel);
-        //     })
-        // }).catch(function (error) {
-        //     console.log(error);
-        // });
+
     },
 
     component:{
@@ -361,7 +301,7 @@ export default {
         },
         editModel(row){
             /** 修改模型函数 */
-            this.$confirm('是否编辑模型?', '提示', { 
+            this.$confirm('是否编辑模型?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -399,11 +339,11 @@ export default {
             else{
                 self.$router.push({name:'modelEdit',params:{modelName:row.ModelName}});
             }
-            
+
         },
         editCooperateModel(row){
             /** 修改合作模型函数 */
-            this.$confirm('是否修改该共享模型?', '提示', { 
+            this.$confirm('是否修改该共享模型?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -445,7 +385,7 @@ export default {
                 }
                 else{
                     alert("删除成功");
-                    window.location.reload();   
+                    window.location.reload();
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -479,7 +419,7 @@ export default {
                 }
                 else{
                     alert("删除成功");
-                    window.location.reload();   
+                    window.location.reload();
                 }
             })
             .catch(function (error) {
