@@ -281,7 +281,7 @@ import { apiUrl } from '../utils/apiUrl';
             modelName:self.modelName,
             testData:self.testData
           })
-          axios.post(self.testUrl,tData,{    
+          axios.post(apiUrl.textTestModel,tData,{    
           headers:{"Content-Type": "application/json;charset=utf-8"}
           })
           .then(function (response) {

@@ -264,9 +264,9 @@ import { apiUrl } from '../utils/apiUrl';
           const self = this;
           var username = self.account;
           var tData = JSON.stringify({
-            username:username,
-            model_name:self.modelName,
-            test_data:self.testData
+            userName:username,
+            modelName:self.modelName,
+            testData:self.testData
           })
           axios.post(apiUrl.textTestModel,tData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}

@@ -20,7 +20,7 @@ const textModelEditPage = resolve => require(["src/pages/textModelEdit"], resolv
 const numbersModelEditPage = resolve => require(["src/pages/numbersModelEdit"], resolve);
 
 const coTrainEditTextPage = resolve => require(["src/pages/coTrainEditText"], resolve);
-const modelTestPage = resolve => require(["src/pages/modelTest"], resolve);
+const modelTestPage = resolve => require(["src/pages/textModelTest"], resolve);
 
 const imageModelTestPage = resolve => require(["src/pages/imageModelTest"], resolve);
 const imageModelEditPage = resolve => require(["src/pages/imageModelEdit"], resolve);
