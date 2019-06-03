@@ -10,7 +10,7 @@ const modelBuildStudentPage = resolve => require(["src/pages/modelBuildStudent"]
 const modelBuildTeacherPage = resolve => require(["src/pages/modelBuildTeacher"], resolve);
 const trainingTextPage = resolve => require(["src/pages/trainingText"], resolve);
 const trainingNumbersPage = resolve => require(["src/pages/trainingNumbers"], resolve);
-const trainingIamgePage = resolve => require(["src/pages/trainingImage"], resolve);
+const trainingImagePage = resolve => require(["src/pages/trainingImage"], resolve);
 const numbersValueSetPage = resolve => require(["src/pages/numbersValueSet"], resolve);
 
 const coTrainStuTextPage = resolve => require(["src/pages/coTrainStuText"], resolve);
@@ -24,6 +24,7 @@ const modelTestPage = resolve => require(["src/pages/modelTest"], resolve);
 
 const imageModelTestPage = resolve => require(["src/pages/imageModelTest"], resolve);
 const imageModelEditPage = resolve => require(["src/pages/imageModelEdit"], resolve);
+
 const router = new VueRouter({
 	mode: 'hash',
 	routes: [
@@ -31,16 +32,6 @@ const router = new VueRouter({
 			name: '/',
 			path: '/',
 			component:modelbaseStudentPage
-		},
-		{
-			name: 'imageModelEdit',
-			path: '/imageModelEdit/:userName/:modelName/:modelStatus',
-			component:imageModelEditPage
-		},
-		{
-			name: 'imageModelTest',
-			path: '/imageModelTest/:userName/:modelName',
-			component:imageModelTestPage
 		},
 		{
 			name: 'imageModelEdit',
@@ -65,7 +56,7 @@ const router = new VueRouter({
 		{
 			name: 'trainingImage',
 			path: '/trainingImage/:modelName',
-			component:trainingIamgePage
+			component:trainingImagePage
 		},
 		{
 			name: 'modelBuildStudent',

@@ -34,7 +34,7 @@
 
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="testModel(scope.row)">测试模型</el-button>
+                        <el-button size="mini" type="text" @click="testMyModel(scope.row)">测试模型</el-button>
                         <el-button size="mini" type="text" @click="editModel(scope.row)">修改模型</el-button>
                         <el-button size="mini" type="text" @click="deleteModel(scope.row)">删除模型</el-button>
                     </template>
@@ -66,7 +66,7 @@
 
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="testModel(scope.row)">测试模型</el-button>
+                        <el-button size="mini" type="text" @click="testSModel(scope.row)">测试模型</el-button>
                         <el-button size="mini" type="text" @click="turntoScratch(scope.row)">应用模型</el-button>
                     </template>
                 </el-table-column>
@@ -254,35 +254,70 @@ export default {
         'layout':layout
     },
     methods:{
-        testModel(row){
-            /** 测试模型 */
-            var self = this;
-            if(row.DataType == "图像"){
-                var uData = JSON.stringify({
-                    userName:self.account,
-                    modelName:row.ModelName
-                })
-                axios.post(apiUrl.StatusCheck,uData,{    
-                    headers:{"Content-Type": "application/json;charset=utf-8"}
-                }).then(function (response) {
-                    /**When logincheck is failed, turn to tuopinpin.com */
-                    if(response.data == 0){
-                        alert("模型未训练，无法使用！");
-                    }
-                    else if(response.data == 1){
-                        alert("模型训练中，请稍后");
-                    }
-                    else{
-                        self.$router.push({name:'imageModelTest',params:{userName:self.account,modelName:row.ModelName}});
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                });
+      testMyModel(row){
+        /** 测试模型 */
+        var self = this;
+        if(row.DataType == "图像"){
+          var uData = JSON.stringify({
+            userName:self.account,
+            modelName:row.ModelName
+          })
+          axios.post(apiUrl.StatusCheck,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            /**When logincheck is failed, turn to tuopinpin.com */
+            if(response.data == 0){
+              alert("模型未训练，无法使用！");
+            }
+            else if(response.data == 1){
+              alert("模型训练中，请稍后");
             }
             else{
-                self.$router.push({name:'modelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
+              self.$router.push({name:'imageModelTest',params:{userName:self.account,modelName:row.ModelName}});
             }
-        },
+          }).catch(function (error) {
+            console.log(error);
+          });
+        }
+        else if(row.DataType == "文本"){
+          self.$router.push({name:'modelTest',params:{userName:self.account,modelName:row.ModelName}});
+        }
+        else {
+          alert("num测试页面尚未完成");
+        }
+      },
+      testSModel(row){
+        /** 测试模型 */
+        var self = this;
+        if(row.DataType == "图像"){
+          var uData = JSON.stringify({
+            userName:row.StudentName,
+            modelName:row.ModelName
+          })
+          axios.post(apiUrl.StatusCheck,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            /**When logincheck is failed, turn to tuopinpin.com */
+            if(response.data == 0){
+              alert("模型未训练，无法使用！");
+            }
+            else if(response.data == 1){
+              alert("模型训练中，请稍后");
+            }
+            else{
+              self.$router.push({name:'imageModelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
+            }
+          }).catch(function (error) {
+            console.log(error);
+          });
+        }
+        else if(row.DataType == "文本"){
+          self.$router.push({name:'modelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
+        }
+        else {
+          alert("num测试页面尚未完成");
+        }
+      },
         myModelBase(){
             /** 我的模型库跳转函数 */
             const self = this;

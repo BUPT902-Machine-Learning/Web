@@ -13,7 +13,7 @@
               我的模型库
               </li>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -28,14 +28,14 @@
               <el-upload
                   name="img"
                   class="upload-demo"
-                  action="http://127.0.0.1:8001/api/ImageClassifier/testImageModel/"
+                  action="http://127.0.0.1:8082/api/image/testImageModel/"
                   :show-file-list=true
                   :on-success="handleSuccess"
                   :on-change="handleChange"
                   :file-list="fileList"
                   :data="uploadData"
                   list-type="picture"
-                  
+
                   align="left">
                     <div class="selectImg" align="left"><el-button type="primary" @click="selectImg(item)">提交测试</el-button></div>
                 </el-upload>
@@ -105,7 +105,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -144,7 +144,7 @@ import { apiUrl } from '../utils/apiUrl';
             }
         }).catch(function (error) {
             console.log(error);
-        }); 
+        });
     },
     methods: {
         handleChange(file, fileList){

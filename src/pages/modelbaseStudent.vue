@@ -21,13 +21,13 @@
             <img class = "model_pic" src = '../assets/myModel.png' style="width:50px;height:50px;">
             <span style="font-size:25px;">我的模型</span>
             <el-table ref="multipleTable" :data="studentData" tooltip-effect="dark" size = "medium" style="width: 100%" >
-                <el-table-column property="Number" label="编号" align='center'></el-table-column>
+                <el-table-column property="Number" label="编号" align='center' width="150px"></el-table-column>
 
-                <el-table-column property="ModelName" label="模型名" align='center'></el-table-column>
+                <el-table-column property="ModelName" label="模型名" align='center' width="150px"></el-table-column>
 
-                <el-table-column property="DataType" label="数据类型" align='center'></el-table-column>
+                <el-table-column property="DataType" label="数据类型" align='center' width="150px"></el-table-column>
 
-                <el-table-column property="UsingAlgorithm" label="训练算法" align='center'></el-table-column>
+                <el-table-column property="UsingAlgorithm" label="训练算法" align='center' width="150px"></el-table-column>
 
                 <el-table-column property="BuildTime" label="模型创建时间" align='center'></el-table-column>
 
@@ -35,8 +35,9 @@
 
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="editModel(scope.row)">修改模型</el-button>
-                        <el-button size="mini" type="text" @click="deleteModel(scope.row)">删除模型</el-button>
+                      <el-button size="mini" type="text" @click="testMyModel(scope.row)">测试模型</el-button>
+                      <el-button size="mini" type="text" @click="editModel(scope.row)">修改模型</el-button>
+                      <el-button size="mini" type="text" @click="deleteModel(scope.row)">删除模型</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -66,7 +67,7 @@
 
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="testModel(scope.row)">测试模型</el-button>
+                        <el-button size="mini" type="text" @click="testTModel(scope.row)">测试模型</el-button>
                         <el-button size="mini" type="text" @click="turntoScratch(scope.row)">应用模型</el-button>
                     </template>
                 </el-table-column>
@@ -190,6 +191,7 @@ export default {
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
             /** 将获取的学生的所有模型信息显示在table中 */
+            console.log(response.data);
             var tmpData = response.data.my_models;
             var tmp_count = 1;
             tmpData.forEach(element => {
@@ -204,12 +206,12 @@ export default {
                 self.studentData.push(addModel);
             });
             /** 将学生所在班级的教师的模型信息显示在table中 */
-            tmpData = response.data.tech_models;
+            tmpData = response.data.teach_models;
             tmp_count = 1;
             tmpData.forEach(element => {
                 var addModel = {};
                 addModel.ModelName = element.cn_name;
-                addModel.TeacherName = element.tech_name; //此处添加了从后端获取合作模型的创建者的名字
+                addModel.TeacherName = element.teach_name; //此处添加了从后端获取合作模型的创建者的名字
                 addModel.UsingAlgorithm = element.algorithm;
                 addModel.DataType = element.data_type;
                 addModel.BuildTime = element.data_create;
@@ -235,7 +237,7 @@ export default {
                 tmpData.forEach(element => {
                     var addModel = {};
                     addModel.ModelName = element.cn_name;
-                    addModel.TeacherName = element.teacher; //此处添加了从后端获取合作模型的创建者的名字
+                    addModel.TeacherName = element.teach_name; //此处添加了从后端获取合作模型的创建者的名字
                     addModel.UsingAlgorithm = element.algorithm;
                     addModel.DataType = element.data_type;
                     addModel.BuildTime = element.data_create;
@@ -275,10 +277,70 @@ export default {
                 console.log(error2);
             });
         },
-        testModel(row){
-            var self = this;
-            self.$router.push({name:'modelTest',params:{userName:row.TeacherName,modelName:row.ModelName}});
+        testMyModel(row){
+          /** 测试模型 */
+          var self = this;
+          if(row.DataType == "图像"){
+            var uData = JSON.stringify({
+              userName:self.account,
+              modelName:row.ModelName
+            })
+            axios.post(apiUrl.StatusCheck,uData,{
+              headers:{"Content-Type": "application/json;charset=utf-8"}
+            }).then(function (response) {
+              /**When logincheck is failed, turn to tuopinpin.com */
+              if(response.data == 0){
+                alert("模型未训练，无法使用！");
+              }
+              else if(response.data == 1){
+                alert("模型训练中，请稍后");
+              }
+              else{
+                self.$router.push({name:'imageModelTest',params:{userName:self.account,modelName:row.ModelName}});
+              }
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
+          else if(row.DataType == "文本"){
+            self.$router.push({name:'modelTest',params:{userName:self.account,modelName:row.ModelName}});
+          }
+          else {
+            alert("num测试页面尚未完成");
+          }
         },
+      testTModel(row){
+        /** 测试模型 */
+        var self = this;
+        if(row.DataType == "图像"){
+          var uData = JSON.stringify({
+            userName:row.TeacherName,
+            modelName:row.ModelName
+          })
+          axios.post(apiUrl.StatusCheck,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            /**When logincheck is failed, turn to tuopinpin.com */
+            if(response.data == 0){
+              alert("模型未训练，无法使用！");
+            }
+            else if(response.data == 1){
+              alert("模型训练中，请稍后");
+            }
+            else{
+              self.$router.push({name:'imageModelTest',params:{userName:row.TeacherName,modelName:row.ModelName}});
+            }
+          }).catch(function (error) {
+            console.log(error);
+          });
+        }
+        else if(row.DataType == "文本"){
+          self.$router.push({name:'modelTest',params:{userName:row.TeacherName,modelName:row.ModelName}});
+        }
+        else {
+          alert("num测试页面尚未完成");
+        }
+      },
         testCooperateModel(row){
             var self = this;
             var uData = JSON.stringify({
@@ -351,26 +413,52 @@ export default {
             });
         },
         modelDelete(row){
+          if(row.DataType == "文本"){
             var uData = JSON.stringify({
-                username:this.account,
-                modelName:row.ModelName,
-                data_type:row.DataType
+              username:this.account,
+              modelName:row.ModelName,
+              data_type:row.DataType
             })
-            axios.post(apiUrl.deleteModel,uData,{    
-                headers:{"Content-Type": "application/json;charset=utf-8"}
+            axios.post(apiUrl.deleteModel,uData,{
+              headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
-                if(response.data == "delete_error"){
-                    alert("删除错误");
-                    window.location.reload();
-                }
-                else{
-                    alert("删除成功");
-                    window.location.reload();
-                }
+              if(response.data == "delete_error"){
+                alert("删除错误");
+                window.location.reload();
+              }
+              else{
+                alert("删除成功");
+                window.location.reload();
+              }
             })
-            .catch(function (error) {
+              .catch(function (error) {
                 console.log(error);
-            });
+              });
+          }
+          else if(row.DataType == "图像"){
+            var uData = JSON.stringify({
+              userName:this.account,
+              modelName:row.ModelName
+            })
+            axios.post(apiUrl.deleteImgModel,uData,{
+              headers:{"Content-Type": "application/json;charset=utf-8"}
+            }).then(function (response) {
+              if(response.data == "Delete Model Failed" || response.data == "Unknown Error of Model Deleting"){
+                alert("删除错误");
+                window.location.reload();
+              }
+              else{
+                alert("删除成功");
+                window.location.reload();
+              }
+            })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+          else{
+            //number model delete
+          }
         },
         buildNewModel(){
             const self = this;

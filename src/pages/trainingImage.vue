@@ -68,8 +68,9 @@
         </div>
 
         <div class="image_preview">
-          <div class="image" v-for="(content, index2) in item.contents" :key="index2">
-            <img class="image_size" :src="content" alt="图片"/>
+          <div class="image" v-for="(content, index2) in item.contents" :key="index2"style="position:relative">
+            <img class="image_size" :src="content" alt="图片" height="120px" width="120px"/>
+            <el-button type="info"  size="mini" round @click="deleteImage(index,index2)" style="position:relative;left:-25px;top:-90px;">X</el-button>
           </div>
         </div>
 
@@ -142,7 +143,8 @@
         ],            //存储该模型所有标签、样本信息
         addDev: {                 //存储某一标签的训练数据
           label: '',                //标签名
-          contents:[]               //标签所属的样本名
+          imageName:[],             //存储样本名
+          contents:[]               //标签所属的样本URL
         },
         addLabelVisible: false,   //标签名输入框显示标记
         uploadData:{              //图片文件附属信息
@@ -241,11 +243,26 @@
     },
 
     methods: {
-      addImage(){
-        //1.发送请求上传图片
-
-        //2.显示缩略图
-        //3.提示上传成功
+      deleteImage(index,index2){
+        const self = this;
+        var deleteName = self.tableData[index].imageName[index2];
+        var deleteLabel = self.tableData[index].label;
+        self.tableData[index].imageName.splice(index2,1);
+        self.tableData[index].contents.splice(index2,1);
+        //向后台发送请求，删除该图片文件（逻辑删除）
+        let formData = new FormData();
+        formData.append('modelName', self.modelName);
+        formData.append('label', deleteLabel);
+        formData.append('imgName', deleteName);
+        axios.post(apiUrl.deleteImg,formData,{
+          headers:{"Content-Type": "application/json;charset=utf-8"}
+        }).then(function (response) {
+          if(response.data == "logic delete Success"){
+            console.log("图片删除成功！")
+          }
+        }).catch(function (error) {
+          console.log(error);
+        });
       },
       myModelBase(){
         /** 我的模型库跳转函数 */
@@ -256,13 +273,14 @@
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
         else{
-          self.$router.push("/modelbaseTeacher");
+          self.$router.push("/modelbaseStudent");
         }
       },
 
       addLabel(){
         this.addDev.label = "";
         this.addDev.contents = [];
+        this.addDev.imageName = [];
         this.addLabelVisible = true;
         this.isChange = 1;
       },
@@ -271,6 +289,7 @@
         var checkFlag = false;
         var tmp = {};
         tmp.label = this.addDev.label;
+        tmp.imageName = [];
         tmp.contents = [];
         for(var item of this.tableData){
           if(item.label == tmp.label){
@@ -289,6 +308,7 @@
         this.addLabelVisible = false;
         this.addDev.label = '';
         this.addDev.contents = [];
+        this.addDev.imageName = [];
       },
       deleteLabel(item){
         this.$confirm(`确定移除 标签： ${ item.label }？`, '提示',
@@ -325,6 +345,7 @@
 
       beforeUpload(file){
         // 将逻辑删除标记、文件名跟随图片文件传送到Django后端
+        // 限制图片尺寸（不得过大或者过小）
         this.uploadData.delete = '0';
         this.uploadData.imgName = file.name;
       },
@@ -338,6 +359,7 @@
           // 将上传的图片信息（文件路径）存储在tableData中
           for(var item of this.tableData){
             if(item.label == this.uploadData.label){
+              item.imageName.push(file.name);
               item.contents.push(file.url);
               break;
             }
@@ -425,8 +447,8 @@
     max-height: 100px;
   }
   .image{
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-top: 10px;
     float:left;
   }
