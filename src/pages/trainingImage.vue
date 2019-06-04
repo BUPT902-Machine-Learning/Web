@@ -319,6 +319,7 @@
           }).then(() => {
           // 向Django后端发送物理删除请求，将该标签的文件夹删除，并删除数据库中该文件夹所有的内容
           var uData = JSON.stringify({
+            userName: this.account,
             modelName: this.modelName,
             label: item.label
           })

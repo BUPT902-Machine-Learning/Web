@@ -37,7 +37,9 @@ export const apiUrl = {
   deleteImgModel: "/api/image/deleteImageModel/",                       //删除模型（删除该模型下的所有信息，包括标签，图片文件等）
   trainImgModel: "/api/image/trainImageModel/",                         //训练模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
   testImgModel: "/api/image/testImageModel/",                           //测试模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）
-  StatusCheck: "/api/image/StatusCheck/",                                //获取模型训练状态
+  StatusCheck: "/api/image/StatusCheck/",                               //获取模型训练状态
+  editImgModel: "/api/image/editImgModel/",                             //获取已创建模型的原始信息（标签、样本以及图片文件）
+  reTrainImgModel: "/api/image/reTrainImgModel/",                       //重新训练已有模型（做数据或者权限的修改后）
 
   //techGetImgModel: "/api/ImageClassifier/techGetImgModel/",                       //教师获取图像模型 1.获取自己创建的非合作图像模型 2.获取所在班级学生创建的公开图像模型
   //techGetCoImgModel: "/api/ImageClassifier/techGetCoImgModel/",                   //教师获取图像合作模型
