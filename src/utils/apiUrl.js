@@ -26,6 +26,7 @@ export const apiUrl = {
   //numbers
   getValue:"/api/ImageClassifier/uploadImg/",
   numbersEditModel: "/api/numbers/editModel/",
+  testModelGetValue: "/api/numbers/testModelGetValue/",
   numbersTestModel: "/api/numbers/testModel/",
   numbersOptimalTrain: "/api/numbers/optimalTrain/",
   numbersValueSet: "/api/numbers/valueSet/",

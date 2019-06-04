@@ -380,7 +380,6 @@ import { mapActions, mapState, mapGetters } from "vuex";
     },
     mounted(){
       const self = this;
-      self.valueForm.valueData = this.getValueData;
       self.modelName = self.$route.params.modelName;
        //从cookie中获取token、username、sessionid三个参数
       var csrfTokenName = "csrftoken=";
@@ -436,6 +435,17 @@ import { mapActions, mapState, mapGetters } from "vuex";
           alert(response.data.message);
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
+      }).catch(function (error) {
+        console.log(error);
+      });
+      var uData = JSON.stringify({
+        username:self.account,
+        modelName:self.modelName
+      })
+      axios.post(apiUrl.testModelGetValue,uData,{
+        headers:{"Content-Type": "application/json;charset=utf-8"}
+      }).then(function (response) {
+        self.valueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
       }).catch(function (error) {
         console.log(error);
       });

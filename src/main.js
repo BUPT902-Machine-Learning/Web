@@ -9,6 +9,7 @@ import store from './store';
 import http from './utils/httpAjax';
 import router from './router';
 import App from './App';
+import './assets/icon/iconfont.css';
 
 Vue.prototype.$ajax = axios;
 Vue.config.productionTip = false;
