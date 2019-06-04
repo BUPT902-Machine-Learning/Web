@@ -218,7 +218,7 @@
           </div>
 
           <div class="text_sample">
-            <div class="text_item" v-for="(item2, index2) in item.contents" :key="index2">
+            <div class="numbers_item" v-for="(item2, index2) in item.contents" :key="index2">
               <span class="delete_sample iconfont icon-sample_close" @click="deleteSample(item.contents, index2)"/>
               <table  style="border-collapse:separate; border-spacing:0px 5px;font-family:STHeiti">
                 <tr v-for="(item3, index3) in item2" style="font-size: .9em;display:table-row;">
@@ -323,12 +323,6 @@ import { mapActions, mapState, mapGetters } from "vuex";
         modelBasePath: '',
         token: '',
         sessionid: '',
-        tagColor:[
-          "",
-          "success",
-          "warning",
-          "danger"
-        ],
         valueForm:{
           valueData:[]
         },
@@ -710,6 +704,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           self.$router.push(this.modelBasePath);
         }
       },
+
       logout(){
         /** 注销函数 */
         const self = this;
@@ -718,6 +713,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
         window.location.href = "https://homepagetest.tuopinpin.com/";
         this.ifShow = true;
       },
+
       getInputValue(item, index){
         var ret = "";
         if (this.valueForm.valueData[index].type == 1)
@@ -726,6 +722,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           ret = this.valueForm.valueData[index]["multiSelect"][item];
         return ret;
       },
+
       trueAlgorithm(value){
         /** 算法选择函数 */
         this.param = {};
@@ -941,7 +938,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           self.outputData = [];
           self.outputData.push(tmp);
           self.isSuccess = true;
-          alert("训练成功")
+          alert("训练成功");
         })
         .catch(function (error) {
         console.log(error);
@@ -1003,12 +1000,13 @@ import { mapActions, mapState, mapGetters } from "vuex";
           }).then(() => {
           // 向Django后端发送物理删除请求，将该标签的文件夹删除，并删除数据库中该文件夹所有的内容
           this.tableData.splice(this.tableData.indexOf(item),1);
+          this.isChange = 1;
         }).catch(() => {});
       },
 
       sampleAdd(index) {
-        this.sampleButton = index;
         /** 样本添加函数 */
+        this.sampleButton = index;
         this.addSampleVisible = true;
         this.isChange = 1;
       },
@@ -1132,7 +1130,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
   .text_label_container:hover .delete_label{
     display:inline;/*当鼠标hover时展示*/
   }
-  .text_item {
+  .numbers_item {
     background-color: #e0e0e0;
     margin: .5em;
     padding: .5em .7em;
@@ -1151,13 +1149,13 @@ import { mapActions, mapState, mapGetters } from "vuex";
   }
   .delete_sample {
     cursor: pointer;
-    padding: .35em 0 0 .35em;
+    padding: 0 0 0 .35em;
     float: right;
   }
-  .text_item .delete_sample{
+  .numbers_item .delete_sample{
     visibility: hidden;/*默认隐藏*/
   }
-  .text_item:hover .delete_sample{
+  .numbers_item:hover .delete_sample{
     visibility: visible;/*当鼠标hover时展示*/
   }
   .text_foot{

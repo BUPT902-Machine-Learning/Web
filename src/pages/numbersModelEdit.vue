@@ -956,7 +956,7 @@
             self.outputData = [];
             self.outputData.push(tmp);
             self.isSuccess = true;
-            alert("训练成功")
+            alert("训练成功");
           })
           .catch(function (error) {
             console.log(error);

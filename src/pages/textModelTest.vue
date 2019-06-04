@@ -23,10 +23,10 @@
       </div>
 
       <div class="test_block">
-        <el-form ref="testData" label-width="120px">
-          <el-form-item label="测试数据">
+        <el-form :model="inputTestData" :rules="testDataRules" ref="inputTestData"  label-width="120px">
+          <el-form-item label="测试数据" prop="testData">
             <el-col :span=8>
-              <el-input  v-model="testData" placeholder="请输入测试数据"></el-input>
+              <el-input  v-model="inputTestData.testData" placeholder="请输入测试数据"></el-input>
             </el-col>
             <el-button type="success" @click="confirmTestSubmit()">提交测试</el-button>
           </el-form-item>
@@ -70,11 +70,18 @@ import { apiUrl } from '../utils/apiUrl';
         isCNN: false,               //是否为CNN模型
         isRNN: false,               //是否为RNN模型
         modelName: '',              //模型名
-        testData: '',               //测试数据
+        inputTestData:{
+          testData: ''              //测试数据
+        },
         testOutput:'',              //测试结果
         testTime:'',                //测试用时
         csrfToken: '',              //CSRF标识
-        classId: ''                 //用户所在班级号
+        classId: '',                 //用户所在班级号
+        testDataRules:{
+          testData:[
+            {required: true, message: '请输入测试数据', trigger: 'blur'}
+          ]
+        }
       }
     },
     mounted(){
@@ -157,29 +164,28 @@ import { apiUrl } from '../utils/apiUrl';
         /** 注销函数 */
         window.location.href = "https://homepagetest.tuopinpin.com/";
       },
-      
+
       confirmTestSubmit(){
-        if(this.testData.length == 0){
-          alert("测试数据不能为空");
-        }
-        else{
-          const self = this;
+        /** 模型测试提交函数 */
+        const self = this;
+        this.$refs["inputTestData"].validate((valid) => {
+          if (valid) {
+            var username = self.account;
             var tData = JSON.stringify({
-              username:self.testModelBuilder,
+              username:username,
               modelName:self.modelName,
-              testData:self.testData
+              testData:self.inputTestData.testData
             })
-          axios.post(apiUrl.textTestModel,tData,{    
-            headers:{"Content-Type": "application/json;charset=utf-8"}
-          })
-          .then(function (response) {
-            self.testOutput = response.data.prediction;
-            self.testTime = response.data.time;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        }
+            axios.post(apiUrl.textTestModel,tData,{
+              headers:{"Content-Type": "application/json;charset=utf-8"}
+            }).then(function (response) {
+              self.testOutput = response.data.prediction;
+              self.testTime = response.data.time;
+            }).catch(function (error) {
+              console.log(error);
+            });
+          }
+        })
       }
     }
   }
