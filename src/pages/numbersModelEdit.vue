@@ -4,14 +4,14 @@
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="medium" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="medium" @click="myModelBase()">
               我的模型库
-            </li>
+            </el-button>
           </ul>
         </div>
       </div>
@@ -220,7 +220,16 @@
           <div class="text_sample">
             <div class="text_item" v-for="(item2, index2) in item.contents" :key="index2">
               <span class="delete_sample iconfont icon-sample_close" @click="deleteSample(item.contents, index2)"/>
-              <tr v-for="(item3, index3) in item2" style="font-size: 1em;display:table-row">{{getInputValue(item3, index3)}}</tr>
+              <table  style="border-collapse:separate; border-spacing:0px 5px;font-family:STHeiti">
+                <tr v-for="(item3, index3) in item2" style="font-size: .9em;display:table-row;">
+                  <td align="right">
+                    {{valueForm.valueData[index3].value}}
+                  </td>
+                  <td style="padding-left: 15px">
+                    {{getInputValue(item3, index3)}}
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
 
@@ -363,8 +372,8 @@
         testUrl: '',
         labelRules:{
           label:[
-            {required: true, message: '请输入商品名称', trigger: 'blur'},
-            {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
+            {required: true, message: '请输入标签名称', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
           ]
         },
         valueRule:{
@@ -727,9 +736,9 @@
       getInputValue(item, index){
         var ret = "";
         if (this.valueForm.valueData[index].type == 1)
-          ret = this.valueForm.valueData[index].value + "：" + item + "\n";
+          ret = item;
         else
-          ret = this.valueForm.valueData[index].value + "：" + this.valueForm.valueData[index]["multiSelect"][item] + "\n";
+          ret = this.valueForm.valueData[index]["multiSelect"][item];
         return ret;
       },
       trueAlgorithm(value){
@@ -974,13 +983,22 @@
         /** 标签添加确认函数 */
         this.$refs["addLabel"].validate((valid) => {
           if (valid) {
-            var tmp = {};
-            tmp.label = this.addLabel.label;
+            let flag = true;
+            for(var item of this.tableData){
+              if(this.addLabel.label == item.label){
+                flag = false;
+                break;
+              }
+            }
+            if (flag){
+              var tmp = {};
+              tmp.label = this.addLabel.label;
+              tmp.contents = [];
+              this.tableData.push(tmp);
+              this.isChange = 1;
+            }
             this.addLabel.label = "";
-            tmp.contents = [];
-            this.tableData.push(tmp);
             this.addLabelVisible = false;
-            this.isChange = 1;
           }
         })
       },
