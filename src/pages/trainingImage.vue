@@ -216,7 +216,10 @@
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -231,10 +234,16 @@
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response == "Create Image Model Success!"){
-          alert("创建模型成功！");
+          this.$message({
+            type: 'info',
+            message: "创建模型成功！"
+          });
         }
         else if(response == "Model Name Check Failed!"){
-          alert("模型名重复，请重新创建！");
+          this.$message({
+            type: 'info',
+            message: "模型名重复，请重新创建！"
+          });
         }
       }).catch(function (error) {
         console.log(error);
@@ -271,7 +280,10 @@
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
         else{
@@ -301,7 +313,10 @@
         }
         if(tmp.label.indexOf(",") != -1 ||tmp.label.indexOf("，") != -1
           ||tmp.label.indexOf(".") != -1 ||tmp.label.indexOf("。") != -1){
-          alert("标签名中含有非法字符");
+          this.$message({
+            type: 'info',
+            message: "标签名中含有非法字符"
+          });
         }
         else if(this.tableData.length == 0 || checkFlag == false){
           this.tableData.push(tmp);
@@ -320,7 +335,10 @@
           this.isChange = 1;
         }
         else {
-          alert("该标签名已存在");
+          this.$message({
+            type: 'info',
+            message: "该标签名已存在"
+          });
         }
       },
 
@@ -347,7 +365,10 @@
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
-              alert("标签删除成功");
+              this.$message({
+                type: 'info',
+                message: "标签删除成功"
+              });
             }
           }).catch(function (error) {
             console.log(error);
@@ -373,7 +394,10 @@
 
       handleSuccess(response, file, fileList){
         if(response == "Name Check Failed!") {
-          alert("文件名重复，上传失败");
+          this.$message({
+            type: 'info',
+            message: "文件名重复，上传失败"
+          });
           fileList.splice(fileList.indexOf(file),1);
         }
         else {
@@ -414,7 +438,10 @@
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
-            alert("图片删除成功");
+            this.$message({
+              type: 'info',
+              message: "图片删除成功"
+            });
           }
         }).catch(function (error) {
           console.log(error);
@@ -425,13 +452,19 @@
         /** 提交并训练函数 */
         var tmp = false;
         if(this.tableData.length == 0){
-          alert("训练数据不能为空");
+          this.$message({
+            type: 'info',
+            message: "训练数据不能为空"
+          });
           tmp = true;
         }
         else{
           this.tableData.forEach(element => {
             if(element.contents.length == 0){
-              alert("训练样本不能为空");
+              this.$message({
+                type: 'info',
+                message: "训练样本不能为空"
+              });
               tmp = true;
               return;
             }
@@ -450,7 +483,10 @@
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                alert("训练提交成功，正在训练！");
+                this.$message({
+                  type: 'info',
+                  message: "训练提交成功，正在训练！"
+                });
                 var uData = JSON.stringify({
                   userName:this.account,
                   modelName:this.modelName,

@@ -175,7 +175,10 @@ export default {
         }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
             if(response.data.code != 1){
-                alert(response.data.message);
+              this.$message({
+                type: 'info',
+                message: response.data.message
+              });
                 window.location.href = "https://homepagetest.tuopinpin.com/";
             }
         }).catch(function (error) {
@@ -266,7 +269,10 @@ export default {
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "模型已训练"){
-                    alert("模型已训练");
+                  this.$message({
+                    type: 'info',
+                    message: "模型已训练"
+                  });
                 }
                 else{
                     var tName = row.TeacherName;
@@ -290,10 +296,16 @@ export default {
             }).then(function (response) {
               /**When logincheck is failed, turn to tuopinpin.com */
               if(response.data == 0){
-                alert("模型未训练，无法使用！");
+                this.$message({
+                  type: 'info',
+                  message: "模型未训练，无法使用！"
+                });
               }
               else if(response.data == 1){
-                alert("模型训练中，请稍后");
+                this.$message({
+                  type: 'info',
+                  message: "模型训练中，请稍后！"
+                });
               }
               else{
                 self.$router.push({name:'imageModelTest',params:{userName:self.account,modelName:row.ModelName}});
@@ -322,10 +334,16 @@ export default {
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
             if(response.data == 0){
-              alert("模型未训练，无法使用！");
+              this.$message({
+                type: 'info',
+                message: "模型未训练，无法使用！"
+              });
             }
             else if(response.data == 1){
-              alert("模型训练中，请稍后");
+              this.$message({
+                type: 'info',
+                message: "模型训练中，请稍后"
+              });
             }
             else{
               self.$router.push({name:'imageModelTest',params:{userName:row.TeacherName,modelName:row.ModelName}});
@@ -351,7 +369,10 @@ export default {
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "模型未训练"){
-                    alert("模型未训练");
+                  this.$message({
+                    type: 'info',
+                    message: "模型未训练"
+                  });
                 }
                 else{
                     self.$router.push({name:'modelTest',params:{userName:row.TeacherName,modelName:row.ModelName}});
@@ -365,8 +386,11 @@ export default {
             const self = this;
             var username = self.account;
             if(username == ""){
-                alert("您尚未登录");
-                window.location.href = "https://homepagetest.tuopinpin.com/";
+              this.$message({
+                type: 'info',
+                message: "您尚未登录"
+              });
+              window.location.href = "https://homepagetest.tuopinpin.com/";
             }
             else{
                 self.$router.push("/modelbaseStudent");
@@ -442,11 +466,17 @@ export default {
               headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
               if(response.data == "delete_error"){
-                alert("删除错误");
+                this.$message({
+                  type: 'info',
+                  message: "删除错误"
+                });
                 window.location.reload();
               }
               else{
-                alert("删除成功");
+                this.$message({
+                  type: 'info',
+                  message: "删除成功"
+                });
                 window.location.reload();
               }
             })
@@ -463,11 +493,17 @@ export default {
               headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
               if(response.data == "Delete Model Failed" || response.data == "Unknown Error of Model Deleting"){
-                alert("删除错误");
+                this.$message({
+                  type: 'info',
+                  message: "删除错误"
+                });
                 window.location.reload();
               }
               else{
-                alert("删除成功");
+                this.$message({
+                  type: 'info',
+                  message: "删除成功"
+                });
                 window.location.reload();
               }
             })

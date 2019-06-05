@@ -109,7 +109,10 @@ import { apiUrl } from '../utils/apiUrl';
         }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
             if(response.data.code != 1){
-                alert(response.data.message);
+              this.$message({
+                type: 'info',
+                message: response.data.message
+              });
                 window.location.href = "https://homepagetest.tuopinpin.com/";
             }
         }).catch(function (error) {
@@ -121,7 +124,10 @@ import { apiUrl } from '../utils/apiUrl';
             const self = this;
             var username = self.account;
             if(username == ""){
-                alert("您尚未登录");
+              this.$message({
+                type: 'info',
+                message: "您尚未登录"
+              });
             }
             else{
                 self.$router.push("/modelbaseStudent");
@@ -136,10 +142,16 @@ import { apiUrl } from '../utils/apiUrl';
             const self = this;
             //非法信息检测：信息空置、非法字符、重复模型名
             if(self.firstForm.modelName.length==0 || self.firstForm.trainDataType.length==0){
-                alert("模型名或训练类型不为空");
+              this.$message({
+                type: 'info',
+                message: "模型名或训练类型不为空"
+              });
                 window.location.reload();
             }else if(self.firstForm.modelName.indexOf(',') != -1 || self.firstForm.modelName.indexOf('.') != -1 || self.firstForm.modelName.indexOf('，') != -1 || self.firstForm.modelName.indexOf('。') != -1 ){
-                alert("非法模型名");
+              this.$message({
+                type: 'info',
+                message: "非法模型名"
+              });
                 window.location.reload();
             }
             else{
@@ -170,7 +182,10 @@ import { apiUrl } from '../utils/apiUrl';
                     headers:{"Content-Type": "application/json;charset=utf-8"}
                   }).then(function (response) {
                     if(response.data[0] == "模型名已存在"){
-                      alert("模型名已存在");
+                      this.$message({
+                        type: 'info',
+                        message: "模型名已存在"
+                      });
                       window.location.reload();
                     }
                     else{

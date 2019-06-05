@@ -216,7 +216,10 @@
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -289,7 +292,10 @@
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
         else{
@@ -312,7 +318,10 @@
         tmp.contents = [];
         for(var item of this.tableData){
           if(item.label == tmp.label){
-            alert("该标签名已存在");
+            this.$message({
+              type: 'info',
+              message: "该标签名已存在"
+            });
             checkFlag = true;
           }
         }
@@ -345,7 +354,10 @@
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
-              alert("标签删除成功");
+              this.$message({
+                type: 'info',
+                message: "标签删除成功"
+              });
               this.isChange = 1;
             }
           }).catch(function (error) {
@@ -374,7 +386,10 @@
 
       handleSuccess(response, file, fileList){
         if(response == "Name Check Failed!") {
-          alert("文件名重复，上传失败");
+          this.$message({
+            type: 'info',
+            message: "文件名重复，上传失败"
+          });
           fileList.splice(fileList.indexOf(file),1);
         }
         else {
@@ -417,7 +432,10 @@
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
-            alert("图片删除成功");
+            this.$message({
+              type: 'info',
+              message: "图片删除成功"
+            });
           }
         }).catch(function (error) {
           console.log(error);
@@ -436,7 +454,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          alert("训练提交成功，正在训练！");
+          this.$message({
+            type: 'info',
+            message: "训练提交成功，正在训练！"
+          });
           var uData = JSON.stringify({
             isChange: this.isChange,
             userName:this.account,

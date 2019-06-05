@@ -175,7 +175,10 @@ import { apiUrl } from '../utils/apiUrl';
       }).then(function (response) {
         /**When logincheck is failed, turn to tuopinpin.com */
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -204,7 +207,10 @@ import { apiUrl } from '../utils/apiUrl';
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
         else{
@@ -226,7 +232,10 @@ import { apiUrl } from '../utils/apiUrl';
           }
         });
         if(tmpFlag == true){
-          alert("发送数据不能为空");
+          this.$message({
+            type: 'info',
+            message: "发送数据不能为空"
+          });
         }
         else{
           this.$confirm('是否提交?', '提示', {
@@ -261,7 +270,10 @@ import { apiUrl } from '../utils/apiUrl';
         headers:{"Content-Type": "application/json;charset=utf-8"}
        })
         .then(function (response) {
-          alert("添加成功");
+          this.$message({
+            type: 'info',
+            message: "添加成功"
+          });
           self.$router.push("/modelbaseStudent");
         })
         .catch(function (error) {

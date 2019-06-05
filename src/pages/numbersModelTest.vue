@@ -194,7 +194,10 @@ import { mapActions, mapState, mapGetters } from "vuex";
       }).then(function (response) {
         /**When logincheck is failed, turn to tuopinpin.com */
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -218,7 +221,10 @@ import { mapActions, mapState, mapGetters } from "vuex";
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
         }
         else{
           self.$router.push(this.modelbasePath);

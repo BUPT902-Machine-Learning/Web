@@ -538,7 +538,10 @@ import { mapActions, mapState, mapGetters } from "vuex";
       }).then(function (response) {
         /**When logincheck is failed, turn to tuopinpin.com */
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -551,7 +554,10 @@ import { mapActions, mapState, mapGetters } from "vuex";
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
         }
         else{
           self.$router.push(this.modelBasePath);
@@ -637,13 +643,19 @@ import { mapActions, mapState, mapGetters } from "vuex";
         /** 模型提交训练函数 */
         var tmp = false;
         if(this.tableData.length == 0){
-          alert("训练数据不能为空");
+          this.$message({
+            type: 'info',
+            message: "训练数据不能为空"
+          });
           tmp = true;
         }
         else{
           this.tableData.forEach(element => {
             if(element.contents.length == 0){
-              alert("训练样本不能为空");
+              this.$message({
+                type: 'info',
+                message: "训练样本不能为空"
+              });
               tmp = true;
               return;
             }
@@ -791,7 +803,10 @@ import { mapActions, mapState, mapGetters } from "vuex";
           self.outputData = [];
           self.outputData.push(tmp);
           self.isSuccess = true;
-          alert("训练成功");
+          this.$message({
+            type: 'info',
+            message: "训练成功"
+          });
         })
         .catch(function (error) {
         console.log(error);

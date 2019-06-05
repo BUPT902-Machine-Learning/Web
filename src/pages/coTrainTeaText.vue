@@ -216,7 +216,10 @@ import { apiUrl } from '../utils/apiUrl';
       }).then(function (response) {
         /**When logincheck is failed, turn to tuopinpin.com */
         if(response.data.code != 1){
-          alert(response.data.message);
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
           window.location.href = "https://homepagetest.tuopinpin.com/";
         }
       }).catch(function (error) {
@@ -228,7 +231,10 @@ import { apiUrl } from '../utils/apiUrl';
         const self = this;
         var username = self.account;
         if(username == ""){
-          alert("您尚未登录");
+          this.$message({
+            type: 'info',
+            message: "您尚未登录"
+          });
         }
         else{
           self.$router.push("/modelbaseTeacher");
@@ -243,7 +249,10 @@ import { apiUrl } from '../utils/apiUrl';
         //教师创建模型，但未提交训练，此时点击该按钮，完成发布模型功能：后端接受请求，存储该模型当前所有信息，此时学生的教师模型部分存在该模型的基础信息
         var tmp = false;
         if(this.tableData.length == 0){
-          alert("标签不能为空");
+          this.$message({
+            type: 'info',
+            message: "标签不能为空"
+          });
           tmp = true;
         }
         if(tmp == false){
@@ -280,7 +289,10 @@ import { apiUrl } from '../utils/apiUrl';
           axios.post(apiUrl.createTextModel,tData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
-            alert("共享模型发布成功");
+            this.$message({
+              type: 'info',
+              message: "共享模型发布成功"
+            });
             self.$router.push("/modelbaseTeacher");
           }).catch(function (error) {
             console.log(error);
