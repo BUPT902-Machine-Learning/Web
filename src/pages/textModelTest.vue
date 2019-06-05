@@ -170,9 +170,8 @@ import { apiUrl } from '../utils/apiUrl';
         const self = this;
         this.$refs["inputTestData"].validate((valid) => {
           if (valid) {
-            var username = self.account;
             var tData = JSON.stringify({
-              username:username,
+              username:self.testModelBuilder,
               modelName:self.modelName,
               testData:self.inputTestData.testData
             })
