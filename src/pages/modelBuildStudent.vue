@@ -4,16 +4,16 @@
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="small" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
-              </li>
+            </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="table_container">
@@ -32,7 +32,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item size="large">
-                    <el-button type="success" @click="buildNewModel()">立即创建</el-button> 
+                    <el-button type="success" @click="buildNewModel()">立即创建</el-button>
                     <el-button type="primary" @click="cancel()">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -103,7 +103,7 @@ import { apiUrl } from '../utils/apiUrl';
             sessionid:self.sessionId,
             class_no:self.classId
         })
-        
+
         axios.post(apiUrl.loginCheck,uData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
@@ -114,7 +114,7 @@ import { apiUrl } from '../utils/apiUrl';
             }
         }).catch(function (error) {
             console.log(error);
-        });  
+        });
     },
     methods:{
         myModelBase(){
@@ -142,7 +142,7 @@ import { apiUrl } from '../utils/apiUrl';
                 alert("非法模型名");
                 window.location.reload();
             }
-            else{ 
+            else{
                 if(self.firstForm.modelName.length != 0){
                   //根据输入信息跳转至不同类型的新建模型页面
                   if(self.firstForm.trainDataType == 'text'){
@@ -190,7 +190,7 @@ import { apiUrl } from '../utils/apiUrl';
                     console.log(error);
                   });
                 }
-            } 
+            }
         },
         cancel(){
             const self = this;

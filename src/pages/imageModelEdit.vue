@@ -5,33 +5,34 @@
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="small" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
-            </li>
+            </el-button>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="main_container">
+
       <div class="model_part">
         <img class = "model_pic" src = '../assets/steam.png'  style="width:80px;height:80px;">
         <span style="font-size:25px">{{modelName}}</span><span style="font-size:18px">({{trainStatus}})</span>
-        <div class="add_label_button">
-          <el-row type="flex" class="row-bg" justify="end">
-            <el-button type="primary" @click="addLabel()">添加标签</el-button>
-            <el-button type="success" @click="submitReTraining()">提交并训练</el-button>
-          </el-row>
+      </div>
 
-          <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" ref="addType">
-            <el-form :model="addDev" ref="addType">
+      <div class="add_label_button">
+        <el-row type="flex" class="row-bg" justify="end">
+          <el-button type="primary" @click="addLabel()">添加标签</el-button>
+          <el-button type="success" @click="submitReTraining()">提交并训练</el-button>
+          <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" align='center'>
+            <el-form :model="addDev" :rules="labelRules" ref="addDev">
               <el-row>
-                <el-form-item label="标签名称：">
+                <el-form-item label="标签名称：" style="width:50%" prop="label">
                   <el-input v-model="addDev.label"></el-input>
                 </el-form-item>
               </el-row>
@@ -41,71 +42,67 @@
               <el-button type="primary" @click="addLabelConfirm()">确 定</el-button>
             </div>
           </el-dialog>
-        </div>
+        </el-row>
       </div>
-    </div>
 
-    <div class="mid_block">
-      <el-form :model="ruleForm" :rules="rules1" ref="ruleForm" label-width="140px">
-        <el-form-item label="模型权限" prop="isPublic">
-          <el-select v-model="ruleForm.isPublic" placeholder="请选择模型权限" id="isPublic"  style="width:200px">
-            <el-option label="公开" value=1></el-option>
-            <el-option label="隐藏" value=0></el-option>
-          </el-select>
-          <span class="notes">选择选择模型权限是否公开</span>
-        </el-form-item>
-      </el-form>
-    </div>
+      <div class="mid_block">
+        <el-form :model="ruleForm" :rules="rules1" ref="ruleForm" label-width="140px">
+          <el-form-item label="模型权限" prop="isPublic">
+            <el-select v-model="ruleForm.isPublic" placeholder="请选择模型权限" id="isPublic"  style="width:200px">
+              <el-option label="公开" value=1></el-option>
+              <el-option label="隐藏" value=0></el-option>
+            </el-select>
+            <span class="notes">选择选择模型权限是否公开</span>
+          </el-form-item>
+        </el-form>
+      </div>
 
-    <div class="train_container">
-      <div class="label_container" v-for="(item, index) in tableData" :key='index'>
-        <div class="delete_label_button">
-          <el-button type="info" size="mini" round @click="deleteLabel(item)">X</el-button>
-        </div>
+      <div class="image_train_container">
+        <div class="image_label_container" v-for="(item, index) in tableData" :key='index'>
 
-        <div class="label_header">
-          <span style="font-size:25px">{{item.label}}</span>
-        </div>
+          <div class="image_label_header">
+            <span class="image_label">{{item.label}}</span>
+          </div>
 
-        <div class="image_preview">
-          <div class="image" v-for="(content, index2) in item.contents" :key="index2"style="position:relative">
-            <img class="image_size" :src="content" alt="图片" height="120px" width="120px"/>
-            <el-button type="info"  size="mini" round @click="deleteImage(index,index2)" style="position:relative;left:-25px;top:-90px;">X</el-button>
+          <div class="image_delete_label">
+            <span class="iconfont icon-label_close" @click="deleteLabel(item)"/>
+          </div>
+
+          <div class="image_sample">
+            <div class="images_item" v-for="(content, index2) in item.contents" :key="index2">
+              <span class="delete_sample iconfont icon-sample_close" @click="deleteImage(index, index2)"/>
+              <table  style="border-collapse:separate; border-spacing:0px 5px;font-family:STHeiti">
+                <img class="image_size" :src="content" alt="图片"/>
+              </table>
+            </div>
+          </div>
+
+          <div class="image_foot">
+            <el-upload
+              name="image"
+              class="upload-demo"
+              action="http://127.0.0.1:8082/api/image/uploadImg/"
+              :show-file-list=false
+              :on-success="handleSuccess"
+              :on-preview="handlePreview"
+              :on-error="handleErr"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :before-upload="beforeUpload"
+              :limit="10"
+              :on-exceed="handleExceed"
+              :file-list="fileList"
+              :data="uploadData"
+              list-type="picture"
+              multiple
+              align="center">
+              <div class="selectImg"><el-button type="primary" @click="selectImg(item)">添加图片</el-button></div>
+            </el-upload>
           </div>
         </div>
-
-        <div class="add_image_button">
-          <el-upload
-            name="img"
-            class="upload-demo"
-            action="http://127.0.0.1:8082/api/image/uploadImg/"
-            :show-file-list=false
-            :on-success="handleSuccess"
-            :on-preview="handlePreview"
-            :on-error="handleErr"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            :before-upload="beforeUpload"
-            :limit="10"
-            :on-exceed="handleExceed"
-            :file-list="fileList"
-            :data="uploadData"
-            list-type="picture"
-            multiple
-            align="left">
-            <div class="selectImg" align="left"><el-button type="primary" @click="selectImg(item)">添加图片</el-button></div>
-          </el-upload>
-        </div>
-
-        <div class="add_label">
-
-        </div>
-
       </div>
+
     </div>
-
-
-
   </div>
 </template>
 
@@ -134,10 +131,10 @@
         addLabelVisible: false,   //标签名输入框显示标记
         uploadData:{              //图片文件附属信息
           account: '',
-          modelName: '',
+          model_name: '',
           delete: '',
           label: '',
-          imgName: ''
+          img_name: ''
         },
         modelName: '',             //模型名
         outputData: [],            //存放训练模型的输出结果
@@ -146,6 +143,21 @@
           isPublic:''              //模型是否公开
         },
         isChange: 0,               //全局变量，用于判断数据表格是否发生变动
+        labelRules:{
+          label:[
+            {required: true, message: '请输入标签名称', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
+          ]
+        },
+        rules1:{
+          isPublic:[
+            {
+              required: true,
+              trigger: 'change',
+              message: '请选择模型权限'
+            }
+          ]
+        }
       }
     },
 
@@ -345,7 +357,7 @@
         // 将模型名、标签名跟随图片文件传送到Django后端
         const self = this;
         self.uploadData.account = self.account;
-        self.uploadData.modelName = self.modelName;
+        self.uploadData.model_name = self.modelName;
         self.uploadData.label = item.label;
         self.isChange = 1;
       },
@@ -354,7 +366,7 @@
         // 将逻辑删除标记、文件名跟随图片文件传送到Django后端
         // 限制图片尺寸（不得过大或者过小）
         this.uploadData.delete = '0';
-        this.uploadData.imgName = file.name;
+        this.uploadData.image_name = file.name;
         self.isChange = 1;
       },
 
@@ -450,40 +462,37 @@
 </script>
 
 <style>
-  .delete_label_button{
-    float: left;
+  .main_container{
+    margin-top: 30px;
+    margin-left: 150px;
+    margin-right: 150px;
   }
-  .image_size{
-    max-height: 60px;
-    max-height: 100px;
+  .model_part{
+    margin-top: -120px;
   }
-  .image{
+  .model_pic{
+    margin-top: 130px;
+  }
+  .notes{
     margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    float:left;
-  }
-  .image_preview{
-    margin-top: 5%;
-    height: 510px;
-    overflow-y:scroll;
+    color:#999999;
   }
   .add_label_button{
-    margin-left: 100%;
+    margin-top: 30px;
+    margin-left: 130px;
   }
-  .add_image_button{
-    margin-top: 610px;
-    margin-left: 40%;
-    position: absolute;
+  .mid_block{
+    margin-top: -20px;
+    margin-left: 130px;
   }
-  .train_container {
+  .image_train_container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     height: calc(100vh - 230px);
     min-height: 200px;
   }
-  .label_container {
+  .image_label_container {
     flex: 1;
     flex-grow: 1;
     border: .8em #777 solid;
@@ -496,22 +505,78 @@
     flex-direction: column;
     position: relative;
   }
-  .label_header {
+  .image_label_header {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     height: 1em;
+  }
+  .image_label {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 700;
+    color: #006400;
+    position: relative;
+    top: -1em;
+    background-color: #fff;
+    width: 90%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .image_delete_label {
+    background-color: #fff;
+    border-radius: 1em;
+    cursor: pointer;
+    position: absolute;
+    top: -.8em;
+    right: 0;
+  }
+  .image_label_container .image_delete_label{
+    display:none;/*默认隐藏*/
+  }
+  .image_label_container:hover .image_delete_label{
+    display:inline;/*当鼠标hover时展示*/
+  }
+  .image_sample {
+    padding: .8em;
+    overflow-y: scroll;
+    margin-bottom: .4em;
+    flex: 1;
+  }
+  .images_item {
+    background-color: #e0e0e0;
+    margin: .5em;
+    padding: .5em .7em;
+    font-size: 1.2em;
     float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
   }
-  .model_part{
-    margin-top: -120px;
+  .delete_sample {
+    cursor: pointer;
+    padding: 0 0 0 .35em;
+    float: right;
   }
-  .main_container{
-    margin-top: 30px;
-    margin-left: 150px;
-    margin-right: 150px;
+  .images_item .delete_sample{
+    visibility: hidden;/*默认隐藏*/
   }
-  .model_pic{
-    margin-top: 130px;
+  .images_item:hover .delete_sample{
+    visibility: visible;/*当鼠标hover时展示*/
   }
+  .image_foot{
+    text-align: center;
+    height: 45px;
+  }
+
+  .image_size{
+    max-height: 60px;
+    max-height: 100px;
+  }
+  .add_label_button{
+    margin-left: 100%;
+  }
+
+
 </style>

@@ -13,7 +13,7 @@
               我的模型库
             </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -59,7 +59,7 @@
                   <span>{{test_time}}</span>
                 </el-col>
             </el-form-item>
-        </el-form>       
+        </el-form>
       </div>
     </div>
   </div>
@@ -84,7 +84,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           valueData:[]
         },
         isSuccess: false,
-        isKNN: false, 
+        isKNN: false,
         isCNN: false,
         isRNN: false,
         ruleForm:{
