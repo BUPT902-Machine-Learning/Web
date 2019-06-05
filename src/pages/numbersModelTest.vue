@@ -6,10 +6,10 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
             </el-button>
           </ul>
@@ -74,6 +74,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
       return {
         account: '',
         role: '',
+        testModelBuilder: '',
         modelbasePath: '',
         token: '',
         sessionid: '',
@@ -139,6 +140,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
     mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
+      self.testModelBuilder = self.$route.params.userName;
        //从cookie中获取token、username、sessionid三个参数
       var csrfTokenName = "csrftoken=";
       var tokenName = "token=";
@@ -234,12 +236,11 @@ import { mapActions, mapState, mapGetters } from "vuex";
         this.$refs["valueForm"].validate((valid) => {
           if (valid) {
             this.test_data = [];
-            var username = this.account;
             for (var item of this.valueForm.valueData){
               this.test_data.push(item.inputValue);
             }
             var tData = JSON.stringify({
-              username:username,
+              username:this.testModelBuilder,
               modelName:this.modelName,
               testData:this.test_data
             })

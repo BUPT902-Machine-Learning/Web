@@ -280,10 +280,10 @@ export default {
           });
         }
         else if(row.DataType == "文本"){
-          self.$router.push({name:'modelTest',params:{userName:self.account,modelName:row.ModelName}});
+          self.$router.push({name:'textModelTest',params:{userName:self.account,modelName:row.ModelName}});
         }
         else {
-          alert("num测试页面尚未完成");
+          self.$router.push({name:'numbersModelTest',params:{userName:self.account,modelName:row.ModelName}});
         }
       },
       testSModel(row){
@@ -312,10 +312,10 @@ export default {
           });
         }
         else if(row.DataType == "文本"){
-          self.$router.push({name:'modelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
+          self.$router.push({name:'textModelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
         }
         else {
-          alert("num测试页面尚未完成");
+          self.$router.push({name:'numbersModelTest',params:{userName:row.StudentName,modelName:row.ModelName}});
         }
       },
         myModelBase(){
