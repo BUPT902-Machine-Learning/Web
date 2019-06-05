@@ -21,8 +21,10 @@
     <div class="main_container">
 
       <div class="model_part">
-        <img class = "model_pic" src = '../assets/steam.png'  style="width:80px;height:80px;">
-        <span style="font-size:25px">{{modelName}}</span><span style="font-size:18px">({{trainStatus}})</span>
+        <img src = '../assets/images/model_name.png'  style="width:50px;height:50px;margin-right: 20px;">
+        <span class="model_type">{{modelName}}</span>
+        <img src = '../assets/images/model_type.png'  style="width:50px;height:50px;margin-left: 200px;margin-right: 20px">
+        <span class="model_type">文本</span>
       </div>
 
       <div class="add_label_button">
@@ -462,16 +464,20 @@
 </script>
 
 <style>
+  .model_part{
+    padding-left: 35%;
+    height: 50px;
+  }
   .main_container{
     margin-top: 30px;
     margin-left: 150px;
     margin-right: 150px;
   }
-  .model_part{
-    margin-top: -120px;
-  }
-  .model_pic{
-    margin-top: 130px;
+  .model_type{
+    position: absolute;
+    font-size:30px;
+    line-height:50px;
+    display:inline-block;
   }
   .notes{
     margin-left: 10px;

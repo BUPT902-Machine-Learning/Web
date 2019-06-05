@@ -6,14 +6,14 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
               </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -306,7 +306,7 @@
                   <span>{{test_time}}</span>
                 </el-col>
             </el-form-item>
-        </el-form>       
+        </el-form>
       </div>
     </div>
   </div>
@@ -332,7 +332,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           valueData:[]
         },
         isSuccess: false,
-        isKNN: false, 
+        isKNN: false,
         isCNN: false,
         isRNN: false,
         ruleForm:{
@@ -409,7 +409,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -429,7 +429,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -449,7 +449,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1||value>5) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -469,7 +469,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -489,7 +489,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value>1||value<0) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
                     callback('请输入数值');
                   }
@@ -509,7 +509,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -529,7 +529,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -549,7 +549,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value>2||value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -569,7 +569,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value>128||value<1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -589,7 +589,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value != 0 && value != 1) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -609,7 +609,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                 if (value == ""){
                   if (value>7||value<2) {
                     callback('数值超出范围');
-                  } 
+                  }
                   else if ((/^[+]{0,1}(\d+)$/).test(value) == false){
                     callback('请输入整数数值');
                   }
@@ -753,7 +753,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           this.testUrl = apiUrl.rnnTest;
         }
       },
-      
+
       confirmTestSubmit(){
         /** 模型测试提交函数 */
         this.$refs["testValueForm"].validate((valid) => {
@@ -817,7 +817,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           });
         }
       },
-    
+
       confirmSubmit(){
         /** 提交确认函数（按钮） */
         var confirmFlag = 0;  //当满足发送条件时置为1

@@ -6,14 +6,14 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
             </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -53,7 +53,7 @@
             <!--</template>-->
           <!--</el-table-column>-->
         <!--</el-table>-->
-      
+
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="primary" @click="labelAdd()">添加标签</el-button>
           <el-button type="success" @click="publishModel()">发布模型</el-button>
@@ -125,7 +125,7 @@ import { apiUrl } from '../utils/apiUrl';
         account: '',          //用户名
         token: '',              //是否登录标识
         sessionId: '',          //会话ID
-        isSuccess: false,       //模型是否训练  
+        isSuccess: false,       //模型是否训练
         dynamicTags:[],         //存储某一标签的所有样本
         isChange: 0,            //全局变量，用于判断数据表格是否发生变动
         modelName: '',          //模型名
@@ -169,7 +169,7 @@ import { apiUrl } from '../utils/apiUrl';
         classId: ''             //用户所在班级号
       }
     },
-    mounted(){ 
+    mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
       var csrfTokenName = "csrftoken=";
@@ -189,7 +189,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -221,7 +221,7 @@ import { apiUrl } from '../utils/apiUrl';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
     },
     methods: {
       myModelBase(){
@@ -259,7 +259,7 @@ import { apiUrl } from '../utils/apiUrl';
               type: 'info',
               message: '已取消提交'
             });
-          });            
+          });
         }
       },
 

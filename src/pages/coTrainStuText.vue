@@ -6,14 +6,14 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
             </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -52,7 +52,7 @@
             <!--</template>-->
           <!--</el-table-column>-->
         <!--</el-table>-->
-      
+
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="success" @click="submitData()">提交数据</el-button>
         </el-row>
@@ -127,7 +127,7 @@ import { apiUrl } from '../utils/apiUrl';
         }
       }
     },
-    mounted(){ 
+    mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
       self.teacherName = self.$route.params.teacherName;
@@ -148,7 +148,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -162,7 +162,7 @@ import { apiUrl } from '../utils/apiUrl';
             self.role = c.substring(role.length, c.length);
         }
       }
-      
+
       var uData = JSON.stringify({
         username:self.account,
         role:self.role,
@@ -180,7 +180,7 @@ import { apiUrl } from '../utils/apiUrl';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
 
       var uData = JSON.stringify({
         username:self.teacherName,
@@ -240,10 +240,10 @@ import { apiUrl } from '../utils/apiUrl';
               type: 'info',
               message: '已取消提交'
             });
-          }); 
+          });
         }
       },
-    
+
       confirmSubmit(){
         const self = this;
         var username = self.account;
