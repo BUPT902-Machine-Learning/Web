@@ -4,16 +4,16 @@
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="small" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
-              </li>
+            </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -51,7 +51,7 @@
             </template>
           </el-table-column>
         </el-table>
-      
+
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="primary" @click="handleAdd()">添加标签</el-button>
           <el-button type="success" @click="handleShow()">发布模型</el-button>
@@ -86,7 +86,7 @@ import { apiUrl } from '../utils/apiUrl';
         account: '',          //用户名
         token: '',              //是否登录标识
         sessionId: '',          //会话ID
-        isSuccess: false,       //模型是否训练  
+        isSuccess: false,       //模型是否训练
         dynamicTags:[],         //存储某一标签的所有样本
         isChange: 0,            //全局变量，用于判断数据表格是否发生变动
         modelName: '',          //模型名
@@ -120,7 +120,7 @@ import { apiUrl } from '../utils/apiUrl';
         classId: ''             //用户所在班级号
       }
     },
-    mounted(){ 
+    mounted(){
       const self = this;
       self.modelName = self.$route.params.modelname;
       var csrfTokenName = "csrftoken=";
@@ -140,7 +140,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -172,7 +172,7 @@ import { apiUrl } from '../utils/apiUrl';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
     },
     methods: {
       myModelBase(){
@@ -236,7 +236,7 @@ import { apiUrl } from '../utils/apiUrl';
               type: 'info',
               message: '已取消提交'
             });
-          });            
+          });
         }
       },
 
@@ -306,7 +306,7 @@ import { apiUrl } from '../utils/apiUrl';
           dynamicTags.splice(dynamicTags.indexOf(tag), 1);
           this.isChange = 1;
       },
-      
+
       handleEdit(row) {
         this.addTagVisible = true;
         this.editDev.label = row.label;

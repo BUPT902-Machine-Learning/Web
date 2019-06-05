@@ -6,14 +6,14 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
             </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -57,7 +57,7 @@
                   <span>{{test_time}}</span>
                 </el-col>
             </el-form-item>
-        </el-form>       
+        </el-form>
       </div>
     </div>
   </div>
@@ -81,7 +81,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
           valueData:[]
         },
         isSuccess: false,
-        isKNN: false, 
+        isKNN: false,
         isCNN: false,
         isRNN: false,
         ruleForm:{

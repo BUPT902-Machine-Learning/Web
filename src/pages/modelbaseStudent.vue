@@ -6,10 +6,10 @@
                   <ul class="nav-list">
                     <img src = "../assets/client.jpg" align = "left">
                     <li class="nav-pile">欢迎，{{this.account}}</li>
-                    <el-button type="danger" size="medium" @click="logout()">
+                    <el-button type="danger" size="small" @click="logout()">
                       注销
                     </el-button>
-                    <el-button type="warning" size="medium" @click="myModelBase()">
+                    <el-button type="warning" size="small" @click="myModelBase()">
                       我的模型库
                     </el-button>
                   </ul>

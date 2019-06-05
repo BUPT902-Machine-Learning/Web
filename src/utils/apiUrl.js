@@ -34,6 +34,7 @@ export const apiUrl = {
   upLoadImg: "/api/image/uploadImg/",                                   //上传训练图片样本
   deleteImg: "/api/image/deleteImg/",                                   //（逻辑）删除训练图片样本
   deleteLabel: "/api/image/deleteLabel/",                               //（物理）删除标签
+  addLabel: "/api/image/addLabel/",                                     //（物理）添加标签
   createImgModel: "/api/image/createImageModel/",                       //创建模型（只存储模型名等基本信息）
   deleteImgModel: "/api/image/deleteImageModel/",                       //删除模型（删除该模型下的所有信息，包括标签，图片文件等）
   trainImgModel: "/api/image/trainImageModel/",                         //训练模型（存储“模型-标签”的映射关系，根据映射关系生成训练数据，训练模型并返回训练结果）

@@ -4,16 +4,16 @@
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="small" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
-              </li>
+            </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -50,11 +50,11 @@
             </template>
           </el-table-column>
         </el-table>
-      
+
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="success" @click="submitData()">提交数据</el-button>
         </el-row>
-        
+
       </div>
     </div>
   </div>
@@ -91,7 +91,7 @@ import { apiUrl } from '../utils/apiUrl';
         csrfToken: ''             //CSRF标识
       }
     },
-    mounted(){ 
+    mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
       self.teacherName = self.$route.params.teacherName;
@@ -112,7 +112,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -126,7 +126,7 @@ import { apiUrl } from '../utils/apiUrl';
             self.role = c.substring(role.length, c.length);
         }
       }
-      
+
       var uData = JSON.stringify({
         username:self.account,
         role:self.role,
@@ -144,7 +144,7 @@ import { apiUrl } from '../utils/apiUrl';
         }
       }).catch(function (error) {
         console.log(error);
-      }); 
+      });
 
       var uData = JSON.stringify({
         username:self.teacherName,
@@ -204,10 +204,10 @@ import { apiUrl } from '../utils/apiUrl';
               type: 'info',
               message: '已取消提交'
             });
-          }); 
+          });
         }
       },
-    
+
       confirmSubmit(){
         const self = this;
         var username = self.account;
@@ -256,7 +256,7 @@ import { apiUrl } from '../utils/apiUrl';
           dynamicTags.splice(dynamicTags.indexOf(tag), 1);
           this.isChange = 1;
       },
-      
+
       handleEdit(row) {
         this.addTagVisible = true;
         this.editDev.label = row.label;
@@ -296,7 +296,7 @@ import { apiUrl } from '../utils/apiUrl';
 </script>
 
 <style>
-  .model_part{ 
+  .model_part{
     margin-top: -120px;
   }
   .main_container{

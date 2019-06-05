@@ -6,14 +6,14 @@
           <ul class="nav-list">
             <img src = "../assets/client.jpg" align = "left">
             <li class="nav-pile">欢迎，{{this.account}}</li>
-            <el-button type="danger" size="medium" @click="logout()">
+            <el-button type="danger" size="small" @click="logout()">
               注销
             </el-button>
-            <el-button type="warning" size="medium" @click="myModelBase()">
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
             </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
     <div class="main_container">
@@ -46,7 +46,7 @@
                   <span>{{testTime}}</span>
                 </el-col>
             </el-form-item>
-        </el-form>       
+        </el-form>
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@ import { apiUrl } from '../utils/apiUrl';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -144,7 +144,7 @@ import { apiUrl } from '../utils/apiUrl';
             }
         }).catch(function (error) {
             console.log(error);
-        }); 
+        });
 
     },
     methods: {

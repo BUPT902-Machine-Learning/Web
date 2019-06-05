@@ -3,16 +3,16 @@
         <div class="app-head">
             <div class="app-head-inner">
                 <div class="head-nav">
-                    <ul class="nav-list">
-                        <li class="nav-pile" @click="logout()">
-                        注销
-                        </li>
-                        <img src = "../assets/client.jpg" align = "left">
-                        <li class="nav-pile">{{this.account}}</li>
-                        <li class="nav-pile" @click="myModelBase()">
-                        我的模型库
-                        </li>
-                    </ul>
+                  <ul class="nav-list">
+                    <img src = "../assets/client.jpg" align = "left">
+                    <li class="nav-pile">欢迎，{{this.account}}</li>
+                    <el-button type="danger" size="small" @click="logout()">
+                      注销
+                    </el-button>
+                    <el-button type="warning" size="small" @click="myModelBase()">
+                      我的模型库
+                    </el-button>
+                  </ul>
                 </div>
             </div>
         </div>
@@ -447,7 +447,7 @@ export default {
                 modelName:row.ModelName,
                 data_type:row.DataType
             })
-            axios.post(apiUrl.deleteModels,uData,{    
+            axios.post(apiUrl.deleteModel,uData,{    
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "delete_error"){

@@ -1,20 +1,20 @@
 <template>
   <div class="fillcontain">
-      
+
     <div class="app-head">
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
-            <li class="nav-pile" @click="logout()">
-              注销
-            </li>
             <img src = "../assets/client.jpg" align = "left">
-            <li class="nav-pile">{{this.account}}</li>
-            <li class="nav-pile" @click="myModelBase()">
+            <li class="nav-pile">欢迎，{{this.account}}</li>
+            <el-button type="danger" size="small" @click="logout()">
+              注销
+            </el-button>
+            <el-button type="warning" size="small" @click="myModelBase()">
               我的模型库
-              </li>
+            </el-button>
           </ul>
-        </div>  
+        </div>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
         <span style="font-size:25px">{{modelName}}</span>
       </div>
 
-      
+
 
       <div class="top_train_block">
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border>
@@ -42,7 +42,7 @@
               <el-dialog title="添加样本" :visible.sync="addTagVisible" :modal-append-to-body="false">
                 <el-form :model="editDev" ref="editType">
                   <el-form-item label="请上传样本图片：">
-                      
+
                       <el-upload
                         name="img"
                         class="upload-demo"
@@ -73,7 +73,7 @@
             </template>
           </el-table-column>
         </el-table>
-      
+
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="primary" @click="handleAdd()">添加标签</el-button>
           <el-button type="success" @click="submitData()">提交并训练</el-button>
@@ -173,7 +173,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
             else{
                 self.token = c.substring(tokenName.length, c.length);
             }
-        }  
+        }
         if(c.indexOf(userName) != -1){
             self.account = decodeURIComponent(c.substring(userName.length, c.length));
         }
@@ -212,7 +212,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
       //   }
       // }).catch(function (error) {
       //   console.log(error);
-      // }); 
+      // });
     },
 
     methods: {
@@ -301,7 +301,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
         }
         console.log("handleclose");
       },
-      
+
       handleEdit(row) {
         this.addTagVisible = true;
         this.editDev.label = row.label;
@@ -473,14 +473,14 @@ import coTrainStuTextVue from './coTrainStuText.vue';
                       type: 'info',
                       message: '已取消提交'
                     });
-                  });            
+                  });
                 }
               });
             }
           });
         }
       },
-    
+
       confirmSubmit(){
       },
 
