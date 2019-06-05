@@ -90,7 +90,7 @@
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="cooperateTurntoScratch(scope.row)">应用模型</el-button>
-                        <el-button size="mini" type="text" @click="editCooperateModel(scope.row)">修改模型</el-button>
+                        <el-button size="mini" type="text" @click="editCooperateModel(scope.row)">训练模型(修改模型)</el-button>
                         <el-button size="mini" type="text" @click="deleteCooperateModel(scope.row)">删除模型</el-button>
                     </template>
                 </el-table-column>
@@ -380,7 +380,7 @@ export default {
         },
         editCooperateModel(row){
             /** 修改合作模型函数 */
-            this.$confirm('是否修改该共享模型?', '提示', {
+            this.$confirm('是否训练(修改)该共享模型?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

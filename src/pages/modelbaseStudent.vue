@@ -239,7 +239,7 @@ export default {
                     addModel.ModelName = element.cn_name;
                     addModel.TeacherName = element.teach_name; //此处添加了从后端获取合作模型的创建者的名字
                     addModel.UsingAlgorithm = element.algorithm;
-                    addModel.DataType = element.data_type;
+                    addModel.DataType = "文本";
                     addModel.BuildTime = element.data_create;
                     addModel.UpdateTime = element.data_update;
                     addModel.Number = tmp_count;

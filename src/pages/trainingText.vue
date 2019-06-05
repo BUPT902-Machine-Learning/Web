@@ -18,8 +18,10 @@
     </div>
     <div class="main_container">
       <div class="model_part">
-        <img class = "model_pic" src = '../assets/steam.png'  style="width:80px;height:80px;">
-        <span style="font-size:25px">{{modelName}}</span>
+        <img src = '../assets/images/model_name.png'  style="width:50px;height:50px;margin-right: 20px;">
+        <span class="model_type">{{modelName}}</span>
+        <img src = '../assets/images/model_type.png'  style="width:50px;height:50px;margin-left: 200px;margin-right: 20px">
+        <span class="model_type">文本</span>
       </div>
       <div class="top_train_block">
         <el-row type="flex" class="row-bg" justify="end">
@@ -66,7 +68,7 @@
           <div class="text_sample">
             <div class="text_item" v-for="(item2, index2) in item.contents" :key="index2">
               <span class="delete_sample iconfont icon-sample_close" @click="deleteSample(item.contents, index2)"/>
-              <span style="font-size: .9em;font-family:STHeiti">{{item2}}</span>
+              <span style="font-size: .9em;font-family:STHeiti;white-space: normal;">{{item2}}</span>
             </div>
           </div>
 
@@ -481,15 +483,19 @@ import { apiUrl } from '../utils/apiUrl';
 
 <style>
   .model_part{
-    margin-top: -120px;
+    padding-left: 35%;
+    height: 50px;
   }
   .main_container{
     margin-top: 30px;
     margin-left: 150px;
     margin-right: 150px;
   }
-  .model_pic{
-    margin-top: 130px;
+  .model_type{
+    position: absolute;
+    font-size:30px;
+    line-height:50px;
+    display:inline-block;
   }
   .notes{
     margin-left: 10px;

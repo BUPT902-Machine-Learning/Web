@@ -12,6 +12,7 @@ const trainingTextPage = resolve => require(["src/pages/trainingText"], resolve)
 const trainingNumbersPage = resolve => require(["src/pages/trainingNumbers"], resolve);
 const trainingImagePage = resolve => require(["src/pages/trainingImage"], resolve);
 const numbersValueSetPage = resolve => require(["src/pages/numbersValueSet"], resolve);
+const coNumbersValueSetPage = resolve => require(["src/pages/coNumbersValueSet"], resolve);
 
 const coTrainStuTextPage = resolve => require(["src/pages/coTrainStuText"], resolve);
 const coTrainTeaTextPage = resolve => require(["src/pages/coTrainTeaText"], resolve);
@@ -113,6 +114,11 @@ const router = new VueRouter({
       name: 'numbersValueSet',
       path: '/numbersValueSet/:modelName',
       component: numbersValueSetPage
+    },
+    {
+      name: 'coNumbersValueSet',
+      path: '/coNumbersValueSet/:modelName',
+      component: coNumbersValueSetPage
     },
     {
       name: 'trainingNumbers',

@@ -191,7 +191,7 @@ import { apiUrl } from '../utils/apiUrl';
                         self.$router.push({name:'coTrainTeaText',params:{modelName:name}});
                       }
                       else if(self.firstForm.trainDataType == 'numbers'){
-                        self.$router.push({name:'coTrainTeaNumbers',params:{modelName:name}});
+                        self.$router.push({name:'coNumbersValueSet',params:{modelName:name}});
                       }
                       else{
                         self.$router.push({name:'coTrainTeaImage',params:{modelName:name}});

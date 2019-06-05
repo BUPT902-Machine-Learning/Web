@@ -50,12 +50,12 @@ export const apiUrl = {
 
 
   //cooperation
-  createModel: "/api/cooperation/createModel/",                   //发布合作模型（仅教师）
+  createTextModel: "/api/cooperation/createTextModel/",                   //发布合作模型（仅教师）
   stuGetCreateModel: "/api/cooperation/stuGetCreateModel/",          //学生获取合作模型信息
   teachGetCreateModel: "/api/cooperation/teachGetCreateModel/",   //教师获取合作模型内容
-  getModelData: "/api/cooperation/getModelData/",                 //获取单个模型具体信息
-  pushData: "/api/cooperation/pushData/",                         //学生向合作模型添加数据
-  trainModel: "/api/cooperation/trainModel/",                     //教师修改合作模型
+  getTextModelData: "/api/cooperation/getTextModelData/",                 //获取单个模型具体信息
+  pushTextData: "/api/cooperation/pushTextData/",                         //学生向合作模型添加数据
+  trainTextModel: "/api/cooperation/trainTextModel/",                     //教师修改合作模型
   ifTrain: "/api/cooperation/ifTrain/",                           //判断一个特定的模型是否已训练
   deleteCreateModel: "/api/cooperation/deleteModel/"                   //删除合作模型
 }
