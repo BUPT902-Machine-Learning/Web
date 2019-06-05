@@ -423,36 +423,56 @@
 
       submitData(){
         /** 提交并训练函数 */
+        var tmp = false;
+        if(this.tableData.length == 0){
+          alert("训练数据不能为空");
+          tmp = true;
+        }
+        else{
+          this.tableData.forEach(element => {
+            if(element.contents.length == 0){
+              alert("训练样本不能为空");
+              tmp = true;
+              return;
+            }
+          });
+        }
         var labels = [];
         for(var item of this.tableData){
           labels.push(item.label);
         }
         //提交训练数据确认函数
-        this.$confirm('是否提交?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          alert("训练提交成功，正在训练！");
-          var uData = JSON.stringify({
-            userName:this.account,
-            modelName:this.modelName,
-            label:labels,
-            publicStatus:this.ruleForm.isPublic
-          })
-          axios.post(apiUrl.trainImgModel,uData,{
-            headers:{"Content-Type": "application/json;charset=utf-8"}
-          }).then(function (response) {
-            console.log(response.data)
-          }).catch(function (error) {
-            console.log(error);
+        if(tmp == false){
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              this.$confirm('是否提交?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                alert("训练提交成功，正在训练！");
+                var uData = JSON.stringify({
+                  userName:this.account,
+                  modelName:this.modelName,
+                  label:labels,
+                  publicStatus:this.ruleForm.isPublic
+                })
+                axios.post(apiUrl.trainImgModel,uData,{
+                  headers:{"Content-Type": "application/json;charset=utf-8"}
+                }).then(function (response) {
+                  console.log(response.data)
+                }).catch(function (error) {
+                  console.log(error);
+                });
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消提交'
+                });
+              });
+            }
           });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消提交'
-          });
-        });
+        }
       }
     }
   }

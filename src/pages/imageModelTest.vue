@@ -39,7 +39,7 @@
                   list-type="picture"
 
                   align="left">
-                    <div class="selectImg" align="left"><el-button type="primary" @click="selectImg(item)">提交测试</el-button></div>
+                    <div class="selectImg" align="left"><el-button type="primary" @click="selectImg()">提交测试</el-button></div>
                 </el-upload>
           </el-form-item>
         </el-form>
@@ -159,10 +159,10 @@ import { apiUrl } from '../utils/apiUrl';
             self.testOutput = response;
             self.uploadData = {};
         },
-        selectImg(item){
+        selectImg(){
             // 将模型名、标签名跟随图片文件传送到Django后端
             const self = this;
-            self.uploadData.account = self.account;
+            self.uploadData.account = self.testModelBuilder;
             self.uploadData.modelName = self.modelName;
         },
         myModelBase(){
