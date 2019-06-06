@@ -1,6 +1,5 @@
 <template>
   <div class="fillcontain">
-
     <div class="app-head">
       <div class="app-head-inner">
         <div class="head-nav">
@@ -644,22 +643,22 @@ import { mapActions, mapState, mapGetters } from "vuex";
         var tmp = false;
         if(this.tableData.length == 0){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "训练数据不能为空"
           });
           tmp = true;
         }
         else{
-          this.tableData.forEach(element => {
-            if(element.contents.length == 0){
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
               this.$message({
-                type: 'info',
+                type: 'error',
                 message: "训练样本不能为空"
               });
               tmp = true;
-              return;
+              break;
             }
-          });
+          }
         }
         if(tmp == false){
           this.$refs["ruleForm"].validate((valid) => {
@@ -670,12 +669,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
                   type: 'warning'
                 }).then(() => {
                   this.confirmSubmit();
-                }).catch(() => {
-                  this.$message({
-                    type: 'info',
-                    message: '已取消提交'
-                  });
-                });
+                })
             }
           });
         }
@@ -803,8 +797,8 @@ import { mapActions, mapState, mapGetters } from "vuex";
           self.outputData = [];
           self.outputData.push(tmp);
           self.isSuccess = true;
-          this.$message({
-            type: 'info',
+          self.$message({
+            type: 'success',
             message: "训练成功"
           });
         })

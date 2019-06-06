@@ -448,13 +448,16 @@ import coTrainStuTextVue from './coTrainStuText.vue';
           tmp = true;
         }
         else{
-          this.tableData.forEach(element => {
-            if(element.contents.length == 0){
-              alert("训练样本不能为空");
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
+              this.$message({
+                type: 'error',
+                message: "训练样本不能为空"
+              });
               tmp = true;
-              return;
+              break;
             }
-          });
+          }
         }
         if(tmp == false){
           this.$refs["ruleForm"].validate((valid) => {
@@ -468,12 +471,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
                     type: 'warning'
                   }).then(() => {
                     this.confirmSubmit();
-                  }).catch(() => {
-                    this.$message({
-                      type: 'info',
-                      message: '已取消提交'
-                    });
-                  });
+                  })
                 }
               });
             }

@@ -235,13 +235,13 @@
       }).then(function (response) {
         if(response == "Create Image Model Success!"){
           this.$message({
-            type: 'info',
+            type: 'success',
             message: "创建模型成功！"
           });
         }
         else if(response == "Model Name Check Failed!"){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "模型名重复，请重新创建！"
           });
         }
@@ -314,7 +314,7 @@
         if(tmp.label.indexOf(",") != -1 ||tmp.label.indexOf("，") != -1
           ||tmp.label.indexOf(".") != -1 ||tmp.label.indexOf("。") != -1){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "标签名中含有非法字符"
           });
         }
@@ -366,11 +366,11 @@
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
               this.$message({
-                type: 'info',
+                type: 'success',
                 message: "标签删除成功"
               });
             }
-          }).catch(function (error) {
+          }.bind(this)).catch(function (error) {
             console.log(error);
           });
           this.tableData.splice(this.tableData.indexOf(item),1);
@@ -395,7 +395,7 @@
       handleSuccess(response, file, fileList){
         if(response == "Name Check Failed!") {
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "文件名重复，上传失败"
           });
           fileList.splice(fileList.indexOf(file),1);
@@ -439,11 +439,11 @@
         }).then(function (response) {
           if(response.data == "logic delete Success"){
             this.$message({
-              type: 'info',
+              type: 'success',
               message: "图片删除成功"
             });
           }
-        }).catch(function (error) {
+        }.bind(this)).catch(function (error) {
           console.log(error);
         });
       },
@@ -453,22 +453,22 @@
         var tmp = false;
         if(this.tableData.length == 0){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "训练数据不能为空"
           });
           tmp = true;
         }
         else{
-          this.tableData.forEach(element => {
-            if(element.contents.length == 0){
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
               this.$message({
-                type: 'info',
+                type: 'error',
                 message: "训练样本不能为空"
               });
               tmp = true;
-              return;
+              break;
             }
-          });
+          }
         }
         var labels = [];
         for(var item of this.tableData){
@@ -484,7 +484,7 @@
                 type: 'warning'
               }).then(() => {
                 this.$message({
-                  type: 'info',
+                  type: 'success',
                   message: "训练提交成功，正在训练！"
                 });
                 var uData = JSON.stringify({
@@ -500,12 +500,7 @@
                 }).catch(function (error) {
                   console.log(error);
                 });
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消提交'
-                });
-              });
+              })
             }
           });
         }

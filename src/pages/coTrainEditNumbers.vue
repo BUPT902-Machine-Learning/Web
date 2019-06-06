@@ -108,11 +108,11 @@
         </el-form>
 
         <el-form label-width="120px">
-          <el-form-item label="测试用时">
-            <el-col :span=8>
-              <span>{{testTime}}</span>
-            </el-col>
-          </el-form-item>
+            <el-form-item label="测试用时">
+                <el-col :span=8>
+                  <span>{{testTime}}</span>
+                </el-col>
+            </el-form-item>
         </el-form>
       </div>
     </div>
@@ -126,16 +126,18 @@ import { apiUrl } from '../utils/apiUrl';
   export default {
     data() {
       return {
-        /** coTrainEditText 数据 */
-        account: '',            //用户名
-        modelType: '',          //模型类型
-        token: '',              //是否登录标识
-        sessionId: '',          //会话ID
-        isSuccess: false,       //模型是否训练
-        dynamicTags:[],         //存储某一标签的所有样本
-        isChange: 1,            //全局变量，用于判断数据表格是否发生变动
-        modelName: '',          //模型名
-        trainType: '',          //训练数据类型
+        /** trainingText 数据 */
+        account: '',          //用户名
+        role: '',             //用户身份
+        modelbasePath: '',    //我的模型库路径
+        token: '',            //是否登录标识
+        sessionId: '',        //会话标识
+        classId: '',          //用户所在班级号
+        isSuccess: false,     //模型是否已经训练
+        dynamicTags:[],       //存储某一标签的所有样本
+        isChange: 0,          //全局变量，用于判断数据表格是否发生变动
+        modelName: '',        //模型名
+        trainType: '',        //训练数据类型(文本)
         addSampleVisible:false,
         addLabelVisible: false,
         addLabel:{
@@ -145,16 +147,15 @@ import { apiUrl } from '../utils/apiUrl';
           sample:''
         },
         sampleButton: '',
-        tableData: [],          //存放还原的所有训练数据
-        outputData: [],         //存放训练模型的输出结果
+        tableData: [],        //存放还原的所有训练数据
+        outputData: [],       //存放训练模型的输出结果
         inputTestData:{
           testData: ''         //测试数据
         },
-        testOutput:'',          //测试输出结果
-        testTime:'',            //测试用时
-        trainUrl: '',           //训练URL
-        testUrl: 'knnTest',     //测试URL
-        ifTrain: false,
+        testOutput:'',        //测试输出结果
+        testTime:'',          //测试用时
+        trainUrl: '',         //训练URL
+        testUrl: 'knnTest',   //测试URL
         labelRules:{
           label:[
             {required: true, message: '请输入标签名称', trigger: 'blur'},
@@ -171,8 +172,17 @@ import { apiUrl } from '../utils/apiUrl';
             {required: true, message: '请输入测试数据', trigger: 'blur'}
           ]
         },
-        csrfToken: '',          //CSRF标识
-        classId: ''             //用户所在班级号
+        rules1:{              //模型公开权限&算法选择规则
+          isPublic:[
+            {
+              required: true,
+              trigger: 'change',
+              message: '请选择模型权限'
+            }
+          ]
+        },
+        csrfToken: '',
+
       }
     },
     mounted(){
@@ -217,25 +227,38 @@ import { apiUrl } from '../utils/apiUrl';
         sessionid:self.sessionId,
         class_no:self.classId
       })
-        axios.post(apiUrl.loginCheck,uData,{    
-            headers:{"Content-Type": "application/json;charset=utf-8"}
-        }).then(function (response) {
-            /**When logincheck is failed, turn to tuopinpin.com */
-            if(response.data.code != 1){
-              this.$message({
-                type: 'info',
-                message: response.data.message
-              });
-                window.location.href = "https://homepagetest.tuopinpin.com/";
-            }
-        }).catch(function (error) {
-            console.log(error);
-        });
+      if(self.role == "teacher"){
+        this.modelbasePath = "/modelbaseTeacher";
+      }
+      else{
+        self.modelbasePath = "/modelbaseStudent";
+      }
+      axios.post(apiUrl.loginCheck,uData,{    
+        headers:{"Content-Type": "application/json;charset=utf-8"}
+      }).then(function (response) {
+        /**When logincheck is failed, turn to tuopinpin.com */
+        if(response.data.code != 1){
+          this.$message({
+            type: 'info',
+            message: response.data.message
+          });
+          window.location.href = "https://homepagetest.tuopinpin.com/";
+        }
+      }).catch(function (error) {
+        console.log(error);
+      });
       var uData = JSON.stringify({
         username:self.account,
         modelName:self.modelName
       })
-      axios.post(apiUrl.textIfTrain,uData,{
+      axios.post(apiUrl.numbersModelGetValue,uData,{
+        headers:{"Content-Type": "application/json;charset=utf-8"}
+      }).then(function (response) {
+        self.valueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
+      }).catch(function (error) {
+        console.log(error);
+      });
+      axios.post(apiUrl.numbersIfTrain,uData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         console.log(response.data[0])
@@ -245,7 +268,7 @@ import { apiUrl } from '../utils/apiUrl';
             teacher_name:self.account,
             model_name:self.modelName
           })
-          axios.post(apiUrl.trainTextModel,uData,{
+          axios.post(apiUrl.trainNumbersModel,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             response.data.model_datas.forEach(element => {
@@ -279,6 +302,7 @@ import { apiUrl } from '../utils/apiUrl';
     },
     methods: {
       myModelBase(){
+        /** 我的模型库跳转函数 */
         const self = this;
         var username = self.account;
         if(username == ""){
@@ -288,7 +312,7 @@ import { apiUrl } from '../utils/apiUrl';
           });
         }
         else{
-          self.$router.push("/modelbaseTeacher");
+          self.$router.push(this.modelbasePath);
         }
       },
 
@@ -343,14 +367,18 @@ import { apiUrl } from '../utils/apiUrl';
           }
         }
         if(tmp == false){
-          //提交训练数据确认函数
-          this.$confirm('是否提交?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.confirmSubmit();
-          })
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              //提交训练数据确认函数
+              this.$confirm('是否提交?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+              }).then(() => {
+                this.confirmSubmit();
+              })
+            }
+          });
         }
       },
 
@@ -362,7 +390,7 @@ import { apiUrl } from '../utils/apiUrl';
           tData = JSON.stringify({
             username:this.account,
             modelName:this.modelName,
-            public_status:1,
+            public_status: this.ruleForm.isPublic,
             model_type: 1,
             trainData:[]
           })
@@ -371,48 +399,47 @@ import { apiUrl } from '../utils/apiUrl';
           tData = JSON.stringify({
             username:this.account,
             modelName:this.modelName,
-            public_status:1,
             trainData:this.tableData,
+            public_status: this.ruleForm.isPublic,
             model_type: 1
           })
           this.isChange = 0;
         }
         console.log(tData);
         const self = this;
-        axios.post(apiUrl.textOptimalTrain,tData,{
+        axios.post(apiUrl.textOptimalTrain,tData,{    
           headers:{"Content-Type": "application/json;charset=utf-8"}
         })
-          .then(function (response) {
-            var tmp = {
-              trainLoss: '',
-              trainAccuracy: '',
-              trainTime: ''
-            }
-            tmp.trainLoss = response.data.loss;
-            tmp.trainAccuracy = self.toPercent(Number(response.data.acc));
-            tmp.trainTime = response.data.time;
-            self.outputData = [];
-            self.outputData.push(tmp);
-            self.isSuccess = true;
-            self.ifTrain = true;
-            self.$message({
-              type: 'success',
-              message: "训练成功"
-            });
-          })
-          .catch(function (error) {
-            console.log(error);
+        .then(function (response) {
+          var tmp = {
+            trainLoss: '',
+            trainAccuracy: '',
+            trainTime: ''
+          }
+          tmp.trainLoss = response.data.loss;
+          tmp.trainAccuracy = self.toPercent(Number(response.data.acc));
+          tmp.trainTime = response.data.time;
+          self.outputData = [];
+          self.outputData.push(tmp);
+          self.isSuccess = true;
+          self.$message({
+            type: 'success',
+            message: "训练成功"
           });
+        })
+        .catch(function (error) {
+        console.log(error);
+        });
       },
 
       toPercent(point){
         /** 百分比转换函数 */
-        if (point==0) {
-          return 0;
-        }
-        var str=Number(point*100).toFixed();
-        str+="%";
-        return str;
+          if (point==0) {
+            return 0;
+          }
+          var str=Number(point*100).toFixed();
+          str+="%";
+          return str;
       },
 
       labelAdd() {

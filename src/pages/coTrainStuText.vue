@@ -233,7 +233,7 @@ import { apiUrl } from '../utils/apiUrl';
         });
         if(tmpFlag == true){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "发送数据不能为空"
           });
         }
@@ -244,12 +244,7 @@ import { apiUrl } from '../utils/apiUrl';
             type: 'warning'
           }).then(() => {
             this.confirmSubmit();
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消提交'
-            });
-          });
+          })
         }
       },
 
@@ -260,18 +255,18 @@ import { apiUrl } from '../utils/apiUrl';
         var confirmFlag = 0;  //当满足发送条件时置为1
         var tData = {};
         var params = {};
-          tData = JSON.stringify({
-            student_name:username,
-            teacher_name:teacher,
-            model_name:self.modelName,
-            train_data:self.tableData
-          })
+        tData = JSON.stringify({
+          student_name:username,
+          teacher_name:teacher,
+          model_name:self.modelName,
+          train_data:self.tableData
+        })
         axios.post(apiUrl.pushTextData,tData,{    
         headers:{"Content-Type": "application/json;charset=utf-8"}
        })
         .then(function (response) {
-          this.$message({
-            type: 'info',
+          self.$message({
+            type: 'success',
             message: "添加成功"
           });
           self.$router.push("/modelbaseStudent");

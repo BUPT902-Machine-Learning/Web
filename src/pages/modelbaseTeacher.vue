@@ -238,7 +238,7 @@ export default {
                     addModel.ModelName = element.cn_name;
                     addModel.TeacherName = element.teacher; //此处添加了从后端获取合作模型的创建者的名字
                     addModel.UsingAlgorithm = element.algorithm;
-                    addModel.DataType = "文本";
+                    addModel.DataType = element.data_type;
                     addModel.BuildTime = element.data_create;
                     addModel.UpdateTime = element.data_update;
                     addModel.Number = tmp_count;
@@ -270,13 +270,13 @@ export default {
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
             if(response.data == 0){
-              this.$message({
-                type: 'info',
+              self.$message({
+                type: 'error',
                 message: "模型未训练，无法使用！"
               });
             }
             else if(response.data == 1){
-              this.$message({
+              self.$message({
                 type: 'info',
                 message: "模型训练中，请稍后"
               });
@@ -308,13 +308,13 @@ export default {
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
             if(response.data == 0){
-              this.$message({
-                type: 'info',
+              self.$message({
+                type: 'error',
                 message: "模型未训练，无法使用！"
               });
             }
             else if(response.data == 1){
-              this.$message({
+              self.$message({
                 type: 'info',
                 message: "模型训练中，请稍后"
               });
@@ -435,20 +435,19 @@ export default {
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "delete_error"){
-                  this.$message({
-                    type: 'info',
+                  self.$message({
+                    type: 'error',
                     message: "删除失败"
                   });
-                    window.location.reload();
                 }
                 else{
-                  this.$message({
-                    type: 'info',
+                  self.$message({
+                    type: 'success',
                     message: "删除成功"
                   });
                     window.location.reload();
                 }
-            }).catch(function (error) {
+            }.bind(this)).catch(function (error) {
                 console.log(error);
             });
         },
@@ -476,19 +475,18 @@ export default {
             }).then(function (response) {
                 if(response.data == "delete_error"){
                   this.$message({
-                    type: 'info',
-                    message: "删除失敗"
+                    type: 'error',
+                    message: "删除失败"
                   });
-                    window.location.reload();
                 }
                 else{
                   this.$message({
-                    type: 'info',
+                    type: 'success',
                     message: "删除成功"
                   });
                   window.location.reload();
                 }
-            })
+            }.bind(this))
             .catch(function (error) {
                 console.log(error);
             });

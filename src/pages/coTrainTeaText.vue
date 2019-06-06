@@ -240,6 +240,7 @@ import { apiUrl } from '../utils/apiUrl';
           self.$router.push("/modelbaseTeacher");
       }
       },
+
       logout(){
         /** 注销函数 */
         window.location.href = "https://homepagetest.tuopinpin.com/";
@@ -250,7 +251,7 @@ import { apiUrl } from '../utils/apiUrl';
         var tmp = false;
         if(this.tableData.length == 0){
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "标签不能为空"
           });
           tmp = true;
@@ -263,12 +264,7 @@ import { apiUrl } from '../utils/apiUrl';
             type: 'warning'
           }).then(() => {
             this.confirmSubmit();
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消提交'
-            });
-          });
+          })
         }
       },
 
@@ -289,8 +285,8 @@ import { apiUrl } from '../utils/apiUrl';
           axios.post(apiUrl.createTextModel,tData,{    
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
-            this.$message({
-              type: 'info',
+            self.$message({
+              type: 'success',
               message: "共享模型发布成功"
             });
             self.$router.push("/modelbaseTeacher");

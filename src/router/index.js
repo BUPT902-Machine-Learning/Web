@@ -16,6 +16,8 @@ const coNumbersValueSetPage = resolve => require(["src/pages/coNumbersValueSet"]
 
 const coTrainStuTextPage = resolve => require(["src/pages/coTrainStuText"], resolve);
 const coTrainTeaTextPage = resolve => require(["src/pages/coTrainTeaText"], resolve);
+const coTrainStuNumbersPage = resolve => require(["src/pages/coTrainStuNumbers"], resolve);
+const coTrainTeaNumbersPage = resolve => require(["src/pages/coTrainTeaNumbers"], resolve);
 
 const textModelEditPage = resolve => require(["src/pages/textModelEdit"], resolve);
 const numbersModelEditPage = resolve => require(["src/pages/numbersModelEdit"], resolve);
@@ -95,6 +97,16 @@ const router = new VueRouter({
 			path: '/coTrainTeaText/:modelName',
 			component: coTrainTeaTextPage
 		},
+    {
+      name: 'coTrainStuNumbers',
+      path: '/coTrainStuNumbers/:teacherName/:modelName',
+      component: coTrainStuNumbersPage
+    },
+    {
+      name: 'coTrainTeaNumbers',
+      path: '/coTrainTeaNumbers/:modelName',
+      component: coTrainTeaNumbersPage
+    },
 		{
 			name: 'coTrainEditText',
 			path: '/coTrainEditText/:modelName',

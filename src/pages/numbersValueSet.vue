@@ -281,7 +281,7 @@ import { apiUrl } from '../utils/apiUrl';
             for (var i = 0; i < nary.length - 1; i++) {
               if (nary[i] == nary[i + 1]) {
                 this.$message({
-                  type: 'info',
+                  type: 'error',
                   message: "重复命名"
                 });
                 return;
