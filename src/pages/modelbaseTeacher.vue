@@ -411,7 +411,15 @@ export default {
         modelCooperateEdit(row) {
             /** 跳转到coTrainEditText页面，并将模型名传递过去 */
             var self = this;
-            self.$router.push({name:'coTrainEditText',params:{modelName:row.ModelName}});
+            if (row.DataType =="文本"){
+              self.$router.push({name:'coTrainEditText',params:{modelName:row.ModelName}});
+            }
+            else if (row.DataType == "数字"){
+              self.$router.push({name:'coTrainEditNumbers',params:{modelName:row.ModelName}});
+            }
+            else{
+              self.$router.push({name:'coTrainEditNumbers',params:{modelName:row.ModelName}});
+            }
         },
         deleteCooperateModel(row){
             /** 删除合作模型函数 */

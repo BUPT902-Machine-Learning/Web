@@ -525,7 +525,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
 
       submitData(){
         /** 模型提交训练函数 */
-        var tmp = false;
+        var tmpFlag = false;
         this.tableData.forEach(element =>{
           if(element.contents.length == 0){
             tmpFlag = true;
