@@ -21,7 +21,7 @@
         <img src = '../assets/images/model_name.png'  style="width:50px;height:50px;margin-right: 20px;">
         <span class="model_type">{{modelName}}</span>
         <img src = '../assets/images/model_type.png'  style="width:50px;height:50px;margin-left: 200px;margin-right: 20px">
-        <span class="model_type">文本</span>
+        <span class="model_type">数字</span>
       </div>
       <div class="top_train_block">
         <el-row type="flex" class="row-bg" justify="end">
@@ -45,6 +45,7 @@
 
       <div class="text_train_container">
         <div class="text_label_container" v-for="(item, index) in tableData" :key='index'>
+
           <div class="text_label_header">
             <span class="text_label">{{item.label}}</span>
           </div>
@@ -54,9 +55,18 @@
           </div>
 
           <div class="text_sample">
-            <div class="text_item" v-for="(item2, index2) in item.contents" :key="index2">
+            <div class="numbers_item" v-for="(item2, index2) in item.contents" :key="index2">
               <span class="delete_sample iconfont icon-sample_close" @click="deleteSample(item.contents, index2)"/>
-              <span style="font-size: .9em;font-family:STHeiti;white-space: normal;">{{item2}}</span>
+              <table  style="border-collapse:separate; border-spacing:0px 5px;font-family:STHeiti">
+                <tr v-for="(item3, index3) in item2" style="font-size: .9em;display:table-row;">
+                  <td align="right">
+                    {{valueForm.valueData[index3].value}}
+                  </td>
+                  <td style="padding-left: 15px">
+                    {{getInputValue(item3, index3)}}
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
 
@@ -65,12 +75,19 @@
               添加样本
             </button>
             <el-dialog title="添加样本" v-if='addSampleVisible' :visible.sync="addSampleVisible" align='center'>
-              <el-form  :model="addSample" :rules="SampleRules" ref="addSample">
-                <el-row>
-                  <el-form-item label="样本名称：" style="width:50%" prop="sample">
-                    <el-input v-model="addSample.sample"></el-input>
+              <el-form label-width="80px" :model="valueForm" :rules="valueRule" ref="valueForm">
+                <template v-for="(item2, index2) in valueForm.valueData">
+                  <el-form-item v-if="item2.type == 1" :label="item2.value" :prop="'valueData.' + index2 +'.inputValue'" :rules="valueRule.inputRule" style="width:50%">
+                    <el-input v-model.number="item2.inputValue"></el-input>
                   </el-form-item>
-                </el-row>
+                  <el-form-item v-if="item2.type == 0" :label="item2.value" :prop="'valueData.' + index2 +'.inputValue'" :rules="valueRule.selectRule" style="width:50%">
+                    <el-select v-model="item2.inputValue" placeholder="数值选择" :disabled="isReadonly" style="width:100%">
+                      <template v-for="(select, index3) in item2.multiSelect">
+                        <el-option :key="select" :value=index3 :label="select"></el-option>
+                      </template>
+                    </el-select>
+                  </el-form-item>
+                </template>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="cancelAddSample()">取 消</el-button>
@@ -90,11 +107,22 @@
       </div>
 
       <div v-if="isSuccess == true" class="test_block">
-        <el-form :model="inputTestData" :rules="testDataRules" ref="inputTestData"  label-width="120px">
-          <el-form-item label="测试数据" prop="testData">
-            <el-col :span=8>
-              <el-input  v-model="inputTestData.testData" placeholder="请输入测试数据"></el-input>
-            </el-col>
+        <el-form ref="test_data" label-width="120px">
+          <el-form-item label="测试数据">
+            <el-form label-width="80px" :model="testValueForm" :rules="valueRule" ref="testValueForm">
+              <template v-for="(item, index) in testValueForm.valueData">
+                <el-form-item v-if="item.type == 1" :label="item.value" :prop="'valueData.' + index +'.inputValue'" :rules="valueRule.inputRule" style="width:300px;margin-bottom: 20px">
+                  <el-input v-model.number="item.inputValue"></el-input>
+                </el-form-item>
+                <el-form-item v-if="item.type == 0" :label="item.value" :prop="'valueData.' + index +'.inputValue'" :rules="valueRule.selectRule" style="width:300px;margin-bottom: 20px">
+                  <el-select v-model="item.inputValue" placeholder="数值选择" :disabled="isReadonly" style="width:100%">
+                    <template v-for="(select,index2) in item.multiSelect">
+                      <el-option :key="select" :value=index2 :label="select"></el-option>
+                    </template>
+                  </el-select>
+                </el-form-item>
+              </template>
+            </el-form>
             <el-button type="success" @click="confirmTestSubmit()">提交测试</el-button>
           </el-form-item>
         </el-form>
@@ -102,17 +130,17 @@
         <el-form label-width="120px">
           <el-form-item label="测试结果">
             <el-col :span=8>
-              <span>{{testOutput}}</span>
+              <span>{{test_output}}</span>
             </el-col>
           </el-form-item>
         </el-form>
 
         <el-form label-width="120px">
-            <el-form-item label="测试用时">
-                <el-col :span=8>
-                  <span>{{testTime}}</span>
-                </el-col>
-            </el-form-item>
+          <el-form-item label="测试用时">
+            <el-col :span=8>
+              <span>{{test_time}}</span>
+            </el-col>
+          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -135,9 +163,15 @@ import { apiUrl } from '../utils/apiUrl';
         classId: '',          //用户所在班级号
         isSuccess: false,     //模型是否已经训练
         dynamicTags:[],       //存储某一标签的所有样本
-        isChange: 0,          //全局变量，用于判断数据表格是否发生变动
+        isChange: 1,          //全局变量，用于判断数据表格是否发生变动
         modelName: '',        //模型名
         trainType: '',        //训练数据类型(文本)
+        valueForm:{
+          valueData:[]
+        },
+        testValueForm:{
+          valueData:[]
+        },
         addSampleVisible:false,
         addLabelVisible: false,
         addLabel:{
@@ -152,8 +186,9 @@ import { apiUrl } from '../utils/apiUrl';
         inputTestData:{
           testData: ''         //测试数据
         },
-        testOutput:'',        //测试输出结果
-        testTime:'',          //测试用时
+        test_data: [],
+        test_output:'',
+        test_time:'',
         trainUrl: '',         //训练URL
         testUrl: 'knnTest',   //测试URL
         labelRules:{
@@ -162,14 +197,17 @@ import { apiUrl } from '../utils/apiUrl';
             {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
           ]
         },
-        sampleRules:{
-          label:[
-            {required: true, message: '请输入样本', trigger: 'blur'}
-          ]
-        },
-        testDataRules:{
-          testData:[
-            {required: true, message: '请输入测试数据', trigger: 'blur'}
+        valueRule:{
+          inputRule:[
+            { required: true, message: '请输入数值', trigger: 'blur' },
+            { type: 'number', message: '输入必须为数值', trigger: 'blur' }
+          ],
+          selectRule:[
+            {
+              required: true,
+              trigger: 'change',
+              message: '请选择值'
+            }
           ]
         },
         rules1:{              //模型公开权限&算法选择规则
@@ -255,6 +293,8 @@ import { apiUrl } from '../utils/apiUrl';
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         self.valueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
+        self.testValueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
+        console.log(self.valueForm.valueData);
       }).catch(function (error) {
         console.log(error);
       });
@@ -288,10 +328,12 @@ import { apiUrl } from '../utils/apiUrl';
             username:self.account,
             modelName:self.modelName
           })
-          axios.post(apiUrl.textEditModel,uData,{
+          axios.post(apiUrl.numbersEditModel,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             self.tableData = response.data.trainData;
+            self.valueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
+            self.testValueForm.valueData = JSON.parse(JSON.stringify(response.data.valueData));
           }).catch(function (error) {
             console.log(error);
           });
@@ -321,27 +363,41 @@ import { apiUrl } from '../utils/apiUrl';
         window.location.href = "https://homepagetest.tuopinpin.com/";
       },
 
+      getInputValue(item, index){
+        var ret = "";
+        if (this.valueForm.valueData[index].type == 1)
+          ret = item;
+        else
+          ret = this.valueForm.valueData[index]["multiSelect"][item];
+        return ret;
+      },
+
       confirmTestSubmit(){
         /** 模型测试提交函数 */
-        const self = this;
-        this.$refs["inputTestData"].validate((valid) => {
+        this.$refs["testValueForm"].validate((valid) => {
           if (valid) {
-            var username = self.account;
+            this.test_data = [];
+            var username = this.account;
+            for (var item of this.testValueForm.valueData){
+              this.test_data.push(item.inputValue);
+            }
             var tData = JSON.stringify({
               username:username,
-              modelName:self.modelName,
-              testData:self.inputTestData.testData
+              modelName:this.modelName,
+              testData:this.test_data
             })
-            axios.post(apiUrl.textTestModel,tData,{
+            axios.post(apiUrl.numbersTestModel,tData,{
               headers:{"Content-Type": "application/json;charset=utf-8"}
-            }).then(function (response) {
-              self.testOutput = response.data.prediction;
-              self.testTime = response.data.time;
-            }).catch(function (error) {
-              console.log(error);
-            });
+            })
+              .then(function (response) {
+                this.test_output = response.data.prediction;
+                this.test_time = response.data.time;
+              }.bind(this))
+              .catch(function (error) {
+                console.log(error);
+              });
           }
-        })
+        });
       },
 
       submitData(){
@@ -367,18 +423,14 @@ import { apiUrl } from '../utils/apiUrl';
           }
         }
         if(tmp == false){
-          this.$refs["ruleForm"].validate((valid) => {
-            if (valid) {
-              //提交训练数据确认函数
-              this.$confirm('是否提交?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-              }).then(() => {
-                this.confirmSubmit();
-              })
-            }
-          });
+          //提交训练数据确认函数
+          this.$confirm('是否提交?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+          }).then(() => {
+            this.confirmSubmit();
+          })
         }
       },
 
@@ -390,8 +442,9 @@ import { apiUrl } from '../utils/apiUrl';
           tData = JSON.stringify({
             username:this.account,
             modelName:this.modelName,
-            public_status: this.ruleForm.isPublic,
             model_type: 1,
+            public_status:1,
+            valueData:this.valueForm.valueData,
             trainData:[]
           })
         } //当数据部分未发生修改的时候，traindata部分置为空（不重复发送未改变的数据）
@@ -400,14 +453,15 @@ import { apiUrl } from '../utils/apiUrl';
             username:this.account,
             modelName:this.modelName,
             trainData:this.tableData,
-            public_status: this.ruleForm.isPublic,
+            valueData:this.valueForm.valueData,
+            public_status:1,
             model_type: 1
           })
           this.isChange = 0;
         }
         console.log(tData);
         const self = this;
-        axios.post(apiUrl.textOptimalTrain,tData,{    
+        axios.post(apiUrl.numbersOptimalTrain,tData,{    
           headers:{"Content-Type": "application/json;charset=utf-8"}
         })
         .then(function (response) {
@@ -472,7 +526,7 @@ import { apiUrl } from '../utils/apiUrl';
         })
       },
 
-      cancelAddLabel(){
+      cancelAddLabel() {
         /** 取消函数（按钮） */
         this.addLabelVisible = false;
         this.addLabel.label = "";
@@ -491,7 +545,8 @@ import { apiUrl } from '../utils/apiUrl';
         }).catch(() => {});
       },
 
-      sampleAdd(index){
+      sampleAdd(index) {
+        /** 样本添加函数 */
         this.sampleButton = index;
         this.addSampleVisible = true;
         this.isChange = 1;
@@ -500,22 +555,26 @@ import { apiUrl } from '../utils/apiUrl';
       confirmAddSample(){
         /** 添加样本确认函数 */
         var index = this.sampleButton;
-        this.$refs["addSample"][index].validate((valid) => {
+        this.$refs["valueForm"][index].validate((valid) => {
           if (valid) {
-            var tmp=[];
-            var i=0;
-            this.tableData[index].contents.push(this.addSample.sample);
-            this.addSample.sample = "";
+            var uData = [];
+            for (var item2 of this.valueForm.valueData){
+              uData.push(item2.inputValue);
+              item2.inputValue = "";
+            }
+            this.tableData[index].contents.push(uData);
             this.addSampleVisible = false;
             this.sampleButton = "";
             this.isChange = 1;
           }
-        })
+        });
       },
 
       cancelAddSample() {
         this.addSampleVisible = false;
-        this.addSample.sample = "";
+        for (var item2 of this.valueForm.valueData){
+          item2.inputValue = "";
+        }
       },
 
       deleteSample(item, index) {
@@ -616,10 +675,10 @@ import { apiUrl } from '../utils/apiUrl';
   .text_label_container:hover .delete_label{
     display:inline;/*当鼠标hover时展示*/
   }
-  .text_item {
+  .numbers_item {
     background-color: #e0e0e0;
     margin: .5em;
-    padding: 10px 15px;
+    padding: .5em .7em;
     font-size: 1.2em;
     float: left;
     white-space: nowrap;
@@ -638,10 +697,10 @@ import { apiUrl } from '../utils/apiUrl';
     padding: 0 0 0 .35em;
     float: right;
   }
-  .text_item .delete_sample{
+  .numbers_item .delete_sample{
     visibility: hidden;/*默认隐藏*/
   }
-  .text_item:hover .delete_sample{
+  .numbers_item:hover .delete_sample{
     visibility: visible;/*当鼠标hover时展示*/
   }
   .text_foot{

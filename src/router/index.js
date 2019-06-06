@@ -23,6 +23,7 @@ const textModelEditPage = resolve => require(["src/pages/textModelEdit"], resolv
 const numbersModelEditPage = resolve => require(["src/pages/numbersModelEdit"], resolve);
 
 const coTrainEditTextPage = resolve => require(["src/pages/coTrainEditText"], resolve);
+const coTrainEditNumbersPage = resolve => require(["src/pages/coTrainEditNumbers"], resolve);
 const textModelTestPage = resolve => require(["src/pages/textModelTest"], resolve);
 const numbersModelTestPage = resolve => require(["src/pages/numbersModelTest"], resolve);
 
@@ -112,6 +113,11 @@ const router = new VueRouter({
 			path: '/coTrainEditText/:modelName',
 			component: coTrainEditTextPage
 		},
+    {
+      name: 'coTrainEditNumbers',
+      path: '/coTrainEditNumbers/:modelName',
+      component: coTrainEditNumbersPage
+    },
 		{
 			name: 'textModelTest',
 			path: '/textModelTestPage/:userName/:modelName',
