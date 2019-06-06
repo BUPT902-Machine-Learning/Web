@@ -30,6 +30,7 @@ export const apiUrl = {
   numbersTestModel: "/api/numbers/testModel/",
   numbersOptimalTrain: "/api/numbers/optimalTrain/",
   numbersValueSet: "/api/numbers/valueSet/",
+
   //image
   upLoadImg: "/api/image/uploadImg/",                                   //上传训练图片样本
   deleteImg: "/api/image/deleteImg/",                                   //（逻辑）删除训练图片样本
@@ -57,6 +58,13 @@ export const apiUrl = {
   getTextModelData: "/api/cooperation/getTextModelData/",                 //获取单个模型具体信息
   pushTextData: "/api/cooperation/pushTextData/",                         //学生向合作模型添加数据
   trainTextModel: "/api/cooperation/trainTextModel/",                     //教师修改合作模型
-  ifTrain: "/api/cooperation/ifTrain/",                           //判断一个特定的模型是否已训练
-  deleteCreateModel: "/api/cooperation/deleteModel/"                   //删除合作模型
+  textIfTrain: "/api/cooperation/textIfTrain/",                           //判断一个特定的模型是否已训练
+  numbersIfTrain: "/api/cooperation/numbersIfTrain/",                           //判断一个特定的模型是否已训练
+  deleteTextModel: "/api/cooperation/deleteTextModel/",                   //删除合作模型
+  deleteNumbersModel: "/api/cooperation/deleteNumbersModel/",                   //删除合作模型
+  createNumbersModel: "/api/cooperation/createNumbersModel/",                   //发布合作模型（仅教师）
+  getNumbersModelData: "/api/cooperation/getNumbersModelData/",                 //获取单个模型具体信息
+  pushNumbersData: "/api/cooperation/pushNumbersData/",                         //学生向合作模型添加数据
+  trainNumbersModel: "/api/cooperation/trainNumbersModel/",                     //教师修改合作模型
+  numbersModelGetValue: "/api/cooperation/numbersModelGetValue/"
 }

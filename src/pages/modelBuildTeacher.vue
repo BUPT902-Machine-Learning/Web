@@ -154,16 +154,14 @@ import { apiUrl } from '../utils/apiUrl';
           //非法信息检测：信息空置、非法字符、重复模型名
           if(self.firstForm.modelName.length==0 || self.firstForm.trainDataType.length==0){
             this.$message({
-              type: 'info',
-              message: "模型名或训练类型不为空"
+              type: 'error',
+              message: "模型名称或数据类型不能为空"
             });
-              window.location.reload();
           }else if(self.firstForm.modelName.indexOf(',') != -1 || self.firstForm.modelName.indexOf('.') != -1 || self.firstForm.modelName.indexOf('，') != -1 || self.firstForm.modelName.indexOf('。') != -1 ){
             this.$message({
-              type: 'info',
+              type: 'error',
               message: "非法模型名"
             });
-              window.location.reload();
           }
           else{
               if(self.firstForm.modelName.length != 0){
@@ -194,11 +192,10 @@ import { apiUrl } from '../utils/apiUrl';
                   headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
                   if (response.data[0] == "模型名已存在") {
-                    this.$message({
+                    self.$message({
                       type: 'info',
                       message: "模型名已存在"
                     });
-                    window.location.reload();
                   }
                   else{
                     if(self.firstForm.trainModelType == 'share') {

@@ -216,7 +216,7 @@
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.code != 1){
-          self.$message({
+          this.$message({
             type: 'info',
             message: response.data.message
           });
@@ -360,13 +360,13 @@
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
-              self.$message({
-                type: 'info',
+              this.$message({
+                type: 'success',
                 message: "标签删除成功"
               });
-              self.isChange = 1;
+              this.isChange = 1;
             }
-          }).catch(function (error) {
+          }.bind(this)).catch(function (error) {
             console.log(error);
           });
           this.tableData.splice(this.tableData.indexOf(item),1);
@@ -393,7 +393,7 @@
       handleSuccess(response, file, fileList){
         if(response == "Name Check Failed!") {
           this.$message({
-            type: 'info',
+            type: 'error',
             message: "文件名重复，上传失败"
           });
           fileList.splice(fileList.indexOf(file),1);
@@ -439,7 +439,7 @@
         }).then(function (response) {
           if(response.data == "logic delete Success"){
             self.$message({
-              type: 'info',
+              type: 'success',
               message: "图片删除成功"
             });
           }
@@ -461,7 +461,7 @@
           type: 'warning'
         }).then(() => {
           this.$message({
-            type: 'info',
+            type: 'success',
             message: "训练提交成功，正在训练！"
           });
           var uData = JSON.stringify({
@@ -478,12 +478,7 @@
           }).catch(function (error) {
             console.log(error);
           });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消提交'
-          });
-        });
+        })
       }
     }
   }

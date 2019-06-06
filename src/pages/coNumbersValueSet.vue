@@ -280,14 +280,14 @@ import { apiUrl } from '../utils/apiUrl';
             for (var i = 0; i < nary.length - 1; i++) {
               if (nary[i] == nary[i + 1]) {
                 this.$message({
-                  type: 'info',
+                  type: 'error',
                   message: "重复命名"
                 });
                 return;
               }
             }
             this.$store.dispatch("setValueData", this.ruleForm.moreNotifyObject);
-            this.$router.push({name:'trainingNumbers',params:{modelName:this.modelName}});
+            this.$router.push({name:'coTrainTeaNumbers',params:{modelName:this.modelName}});
             // var uData = JSON.stringify({
             //   username:this.account,
             //   model_name:this.modelName,

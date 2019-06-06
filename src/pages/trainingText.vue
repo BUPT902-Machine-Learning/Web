@@ -312,22 +312,22 @@ import { apiUrl } from '../utils/apiUrl';
         var tmp = false;
         if(this.tableData.length == 0){
           this.$message({
-            type: 'success',
+            type: 'error',
             message: "训练数据不能为空"
           });
           tmp = true;
         }
         else{
-          this.tableData.forEach(element => {
-            if(element.contents.length == 0){
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
               this.$message({
-                type: 'info',
+                type: 'error',
                 message: "训练样本不能为空"
               });
               tmp = true;
-              return;
+              break;
             }
-          });
+          }
         }
         if(tmp == false){
           this.$refs["ruleForm"].validate((valid) => {
@@ -339,12 +339,7 @@ import { apiUrl } from '../utils/apiUrl';
               type: 'warning'
               }).then(() => {
                 this.confirmSubmit();
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消提交'
-                });
-              });
+              })
             }
           });
         }
@@ -390,8 +385,8 @@ import { apiUrl } from '../utils/apiUrl';
           self.outputData = [];
           self.outputData.push(tmp);
           self.isSuccess = true;
-          this.$message({
-            type: 'info',
+          self.$message({
+            type: 'success',
             message: "训练成功"
           });
         })
