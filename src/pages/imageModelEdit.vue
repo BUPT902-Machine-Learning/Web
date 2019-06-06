@@ -216,7 +216,7 @@
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
         if(response.data.code != 1){
-          this.$message({
+          self.$message({
             type: 'info',
             message: response.data.message
           });
@@ -250,6 +250,12 @@
       }).then(function (response) {
         //训练数据恢复
         var tmpTable = response.data.tableData;
+        if(response.data.publicStatus == '1'){
+          self.ruleForm.isPublic = '1';
+        }
+        else{
+          self.ruleForm.isPublic = '0';
+        }
         tmpTable.forEach(element => {
           var tmpDev = {};
           tmpDev.label = element.label;
@@ -354,11 +360,11 @@
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             if(response.data == "Delete Label Success"){
-              this.$message({
+              self.$message({
                 type: 'info',
                 message: "标签删除成功"
               });
-              this.isChange = 1;
+              self.isChange = 1;
             }
           }).catch(function (error) {
             console.log(error);
@@ -432,7 +438,7 @@
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
-            this.$message({
+            self.$message({
               type: 'info',
               message: "图片删除成功"
             });
