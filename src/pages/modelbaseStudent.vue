@@ -485,62 +485,32 @@ export default {
             });
         },
         modelDelete(row){
-          if(row.DataType == "文本"){
-            var uData = JSON.stringify({
-              username:this.account,
-              modelName:row.ModelName,
-              data_type:row.DataType
-            })
-            axios.post(apiUrl.deleteModel,uData,{
-              headers:{"Content-Type": "application/json;charset=utf-8"}
-            }).then(function (response) {
-              if(response.data == "delete_error"){
-                this.$message({
-                  type: 'error',
-                  message: "删除失败"
-                });
-              }
-              else{
-                this.$message({
-                  type: 'success',
-                  message: "删除成功"
-                });
-                window.location.reload();
-              }
-            }.bind(this))
-              .catch(function (error) {
-                console.log(error);
+          var uData = JSON.stringify({
+            username:this.account,
+            modelName:row.ModelName,
+            data_type:row.DataType
+          })
+          axios.post(apiUrl.deleteModel,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            if(response.data == "delete_error"){
+              this.$message({
+                type: 'error',
+                message: "删除失败"
               });
-          }
-          else if(row.DataType == "图像"){
-            var uData = JSON.stringify({
-              userName:this.account,
-              modelName:row.ModelName
-            })
-            axios.post(apiUrl.deleteImgModel,uData,{
-              headers:{"Content-Type": "application/json;charset=utf-8"}
-            }).then(function (response) {
-              if(response.data == "Delete Model Failed" || response.data == "Unknown Error of Model Deleting"){
-                this.$message({
-                  type: 'error',
-                  message: "删除失败"
-                });
-              }
-              else{
-                this.$message({
-                  type: 'success',
-                  message: "删除成功"
-                });
-                window.location.reload();
-              }
-            }.bind(this))
-              .catch(function (error) {
-                console.log(error);
+            }
+            else{
+              this.$message({
+                type: 'success',
+                message: "删除成功"
               });
-          }
-          else{
-            //number model delete
-          }
+              window.location.reload();
+              // this.studentData.splice(index, 1);
+            }
+          }.bind(this))
+            .catch(function (error) {
+              console.log(error);
+            });
         },
         buildNewModel(){
             const self = this;

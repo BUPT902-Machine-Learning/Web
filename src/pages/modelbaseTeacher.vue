@@ -437,19 +437,20 @@ export default {
             /** 删除合作模型操作函数 */
             var uData = JSON.stringify({
                 username:this.account,
-                modelName:row.ModelName
+                modelName:row.ModelName,
+                data_type:row.DataType
             })
             axios.post(apiUrl.deleteModel,uData,{    
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "delete_error"){
-                  self.$message({
+                  this.$message({
                     type: 'error',
                     message: "删除失败"
                   });
                 }
                 else{
-                  self.$message({
+                  this.$message({
                     type: 'success',
                     message: "删除成功"
                   });
