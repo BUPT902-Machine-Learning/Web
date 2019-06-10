@@ -20,7 +20,7 @@
             <img class = "model_pic" src = '../assets/myModel.png'  style="width:50px;height:50px;">
             <span style="font-size:25px;">我的模型</span>
             <el-table ref="multipleTable" :data="teacherData" tooltip-effect="dark" size = "medium" style="width: 100%" >
-                <el-table-column property="Number" label="编号" align='center' width="150px"></el-table-column>
+                <el-table-column property="Number" label="编号" type="index" align='center' width="150px"></el-table-column>
 
                 <el-table-column property="ModelName" label="模型名" align='center' width="150px"></el-table-column>
 
@@ -36,7 +36,7 @@
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="testMyModel(scope.row)">测试模型</el-button>
                         <el-button size="mini" type="text" @click="editModel(scope.row)">修改模型</el-button>
-                        <el-button size="mini" type="text" @click="deleteModel(scope.row)">删除模型</el-button>
+                        <el-button size="mini" type="text" @click="deleteModel(scope.row, scope.$index)">删除模型</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -50,7 +50,7 @@
             <img class = "model_pic" src = '../assets/studentModel.png'  style="width:50px;height:50px;">
             <span style="font-size:25px;">学生模型</span>
             <el-table ref="multipleTable" :data="studentData" tooltip-effect="dark" size = "medium" style="width: 100%" >
-                <el-table-column property="Number" label="编号" align='center'></el-table-column>
+                <el-table-column property="Number" label="编号" type="index" align='center'></el-table-column>
 
                 <el-table-column property="ModelName" label="模型名" align='center'></el-table-column>
 
@@ -77,7 +77,7 @@
             <img class = "model_pic" src = '../assets/cooperation.png'  style="width:50px;height:50px;">
             <span style="font-size:25px;">合作模型</span>
             <el-table ref="multipleTable" :data="cooperateData" tooltip-effect="dark" size = "medium" style="width: 100%" >
-                <el-table-column property="Number" label="编号" align='center'></el-table-column>
+                <el-table-column property="Number" label="编号" type="index" align='center'></el-table-column>
 
                 <el-table-column property="ModelName" label="模型名" align='center'></el-table-column>
 
@@ -91,7 +91,7 @@
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="cooperateTurntoScratch(scope.row)">应用模型</el-button>
                         <el-button size="mini" type="text" @click="editCooperateModel(scope.row)">训练模型(修改模型)</el-button>
-                        <el-button size="mini" type="text" @click="deleteCooperateModel(scope.row)">删除模型</el-button>
+                        <el-button size="mini" type="text" @click="deleteCooperateModel(scope.row, scope.$index)">删除模型</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -191,11 +191,8 @@ export default {
             console.log(response);
             /** 将获取的教师的所有模型信息显示在table中 */
             var tmpData = response.data.my_models;
-            var tmp_count = 1;
             tmpData.forEach(element => {
                 var addModel = {};
-                addModel.Number = tmp_count;
-                tmp_count += 1;
                 addModel.ModelName = element.cn_name;
                 addModel.UsingAlgorithm = element.algorithm;
                 addModel.DataType = element.data_type;
@@ -205,7 +202,6 @@ export default {
             });
             /** 将教师所在班级的学生的模型信息显示在table中 */
             tmpData = response.data.stu_models;
-            tmp_count = 1;
             tmpData.forEach(element => {
                 element.forEach(StuElement =>{
                     var addModel = {};
@@ -215,8 +211,6 @@ export default {
                     addModel.DataType = StuElement.data_type;
                     addModel.BuildTime = StuElement.data_create;
                     addModel.UpdateTime = StuElement.data_update;
-                    addModel.Number = tmp_count;
-                    tmp_count += 1;
                     self.studentData.push(addModel);
                 });
             });
@@ -232,7 +226,6 @@ export default {
             headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
             var tmpData = response.data;
-            var tmp_count = 1;
             tmpData.forEach(element => {
                     var addModel = {};
                     addModel.ModelName = element.cn_name;
@@ -241,8 +234,6 @@ export default {
                     addModel.DataType = element.data_type;
                     addModel.BuildTime = element.data_create;
                     addModel.UpdateTime = element.data_update;
-                    addModel.Number = tmp_count;
-                    tmp_count += 1;
                     self.cooperateData.push(addModel);
             })
         }).catch(function (error) {
@@ -421,57 +412,58 @@ export default {
               self.$router.push({name:'coTrainEditNumbers',params:{modelName:row.ModelName}});
             }
         },
-        deleteCooperateModel(row){
+        deleteCooperateModel(row, index){
             /** 删除合作模型函数 */
             this.$confirm('是否删除该共享模型?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.cooperateModelDelete(row);
+                this.cooperateModelDelete(row, index);
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        cooperateModelDelete(row){
+        cooperateModelDelete(row, index){
             /** 删除合作模型操作函数 */
             var uData = JSON.stringify({
                 username:this.account,
-                modelName:row.ModelName
+                modelName:row.ModelName,
+                data_type:row.DataType
             })
             axios.post(apiUrl.deleteModel,uData,{    
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
                 if(response.data == "delete_error"){
-                  self.$message({
+                  this.$message({
                     type: 'error',
                     message: "删除失败"
                   });
                 }
                 else{
-                  self.$message({
+                  this.$message({
                     type: 'success',
                     message: "删除成功"
                   });
-                    window.location.reload();
+                  this.cooperateData.splice(index, 1);
                 }
             }.bind(this)).catch(function (error) {
                 console.log(error);
             });
         },
-        deleteModel(row){
+        deleteModel(row, index){
             /** 删除模型函数 */
             this.$confirm('是否删除?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.modelDelete(row);
+                this.modelDelete(row, index);
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        modelDelete(row){
+        modelDelete(row, index){
             /** 删除模型操作函数 */
             var uData = JSON.stringify({
                 username:this.account,
@@ -492,7 +484,7 @@ export default {
                     type: 'success',
                     message: "删除成功"
                   });
-                  window.location.reload();
+                  this.teacherData.splice(index, 1);
                 }
             }.bind(this))
             .catch(function (error) {
