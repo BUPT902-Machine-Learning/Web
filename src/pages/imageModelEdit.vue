@@ -127,6 +127,7 @@
         ],            //存储该模型所有标签、样本信息
         addDev: {                 //存储某一标签的训练数据
           label: '',                //标签名
+          imageId:[],               //上传图片唯一ID
           imageName:[],             //存储样本名
           contents:[]               //标签所属的样本URL
         },
@@ -261,6 +262,7 @@
           tmpDev.label = element.label;
           tmpDev.imageName = element.image_name;
           tmpDev.contents = element.contents;
+          tmpDev.imageId = element.image_id;
           self.tableData.push(tmpDev);
         })
         console.log(self.tableData);
@@ -273,25 +275,23 @@
     methods: {
       deleteImage(index,index2){
         const self = this;
-        var deleteName = self.tableData[index].imageName[index2];
-        var deleteLabel = self.tableData[index].label;
+        var deleteId = self.tableData[index].imageId[index2];
         self.tableData[index].imageName.splice(index2,1);
         self.tableData[index].contents.splice(index2,1);
+        self.tableData[index].imageId.splice(index2,1);
         //向后台发送请求，删除该图片文件（逻辑删除）
         let formData = new FormData();
-        formData.append('modelName', self.modelName);
-        formData.append('label', deleteLabel);
-        formData.append('imgName', deleteName);
+        formData.append('image_id', deleteId);
         axios.post(apiUrl.deleteImg,formData,{
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
-            console.log("图片删除成功！");
-            self.isChange = 1;
+            console.log("图片删除成功！")
           }
         }).catch(function (error) {
           console.log(error);
         });
+        self.isChange = 1;
       },
       myModelBase(){
         /** 我的模型库跳转函数 */
@@ -313,35 +313,60 @@
         this.addDev.label = "";
         this.addDev.contents = [];
         this.addDev.imageName = [];
+        this.addDev.imageId = [];
         this.addLabelVisible = true;
       },
 
       addLabelConfirm(){
+        this.addLabelVisible = false;
         var checkFlag = false;
         var tmp = {};
         tmp.label = this.addDev.label;
         tmp.imageName = [];
         tmp.contents = [];
+        tmp.imageId = [];
         for(var item of this.tableData){
           if(item.label == tmp.label){
-            this.$message({
-              type: 'info',
-              message: "该标签名已存在"
-            });
             checkFlag = true;
           }
         }
-        if(this.tableData.length == 0 || checkFlag == false){
+        if(tmp.label.indexOf(",") != -1 ||tmp.label.indexOf("，") != -1
+          ||tmp.label.indexOf(".") != -1 ||tmp.label.indexOf("。") != -1){
+          this.$message({
+            type: 'error',
+            message: "标签名中含有非法字符"
+          });
+        }
+        else if(this.tableData.length == 0 || checkFlag == false){
           this.tableData.push(tmp);
+          var uData = JSON.stringify({
+            userName: this.account,
+            modelName: this.modelName,
+            label: tmp.label
+          })
+          axios.post(apiUrl.addLabel,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            console.log(response.data)
+          }).catch(function (error) {
+            console.log(error);
+          });
           this.isChange = 1;
-          this.addLabelVisible = false;
+        }
+        else {
+          this.$message({
+            type: 'info',
+            message: "该标签名已存在"
+          });
         }
       },
+
       addLabelCancel(){
         this.addLabelVisible = false;
         this.addDev.label = '';
         this.addDev.contents = [];
         this.addDev.imageName = [];
+        this.addDev.imageId = [];
       },
       deleteLabel(item){
         this.$confirm(`确定移除 标签： ${ item.label }？`, '提示',
@@ -450,6 +475,7 @@
 
       submitReTraining(){
         /** 提交并训练函数 */
+        const self = this;
         var labels = [];
         for(var item of this.tableData){
           labels.push(item.label);
@@ -475,6 +501,7 @@
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             console.log(response.data)
+            self.isChange = 0;
           }).catch(function (error) {
             console.log(error);
           });
