@@ -474,39 +474,6 @@
       },
 
       submitReTraining(){
-        // /** 提交并训练函数 */
-        // const self = this;
-        // var labels = [];
-        // for(var item of this.tableData){
-        //   labels.push(item.label);
-        // }
-        // //提交训练数据确认函数
-        // this.$confirm('是否提交?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: "训练提交成功，正在训练！"
-        //   });
-        //   var uData = JSON.stringify({
-        //     isChange: this.isChange,
-        //     userName:this.account,
-        //     modelName:this.modelName,
-        //     label:labels,
-        //     publicStatus:this.ruleForm.isPublic
-        //   })
-        //   axios.post(apiUrl.reTrainImgModel,uData,{
-        //     headers:{"Content-Type": "application/json;charset=utf-8"}
-        //   }).then(function (response) {
-        //     console.log(response.data)
-        //     self.isChange = 0;
-        //   }).catch(function (error) {
-        //     console.log(error);
-        //   });
-        // })
-
         /** 提交并训练函数 */
         const self = this;
         var tmp = false;
@@ -541,7 +508,7 @@
           labels.push(item.label);
         }
         //提交训练数据确认函数
-        if(tmp == false) {
+        if(tmp == false){
           this.$refs["ruleForm"].validate((valid) => {
             if (valid) {
               this.$confirm('是否提交?', '提示', {
@@ -549,23 +516,30 @@
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                this.$message({
-                  type: 'success',
-                  message: "训练提交成功，正在训练！"
+                const loading = this.$loading({
+                  lock: true,
+                  text: '正在训练，请稍候...',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0, 0, 0, 0.7)'
                 });
+                // this.$message({
+                //   type: 'success',
+                //   message: "训练提交成功，正在训练！"
+                // });
                 var uData = JSON.stringify({
-                  userName: this.account,
-                  modelName: this.modelName,
-                  label: labels,
-                  publicStatus: this.ruleForm.isPublic,
+                  userName:this.account,
+                  modelName:this.modelName,
+                  label:labels,
+                  publicStatus:this.ruleForm.isPublic,
                   isChange: this.isChange
                 })
-                axios.post(apiUrl.trainImgModel, uData, {
-                  headers: {"Content-Type": "application/json;charset=utf-8"}
+                axios.post(apiUrl.trainImgModel,uData,{
+                  headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
-                  console.log(response.data)
+                  loading.close();
                   self.isChange = 0;
                 }).catch(function (error) {
+                  loading.close();
                   console.log(error);
                 });
               })
