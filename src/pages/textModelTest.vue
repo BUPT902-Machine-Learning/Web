@@ -178,6 +178,12 @@ import { apiUrl } from '../utils/apiUrl';
         const self = this;
         this.$refs["inputTestData"].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在预测，请稍候...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             var tData = JSON.stringify({
               username:self.testModelBuilder,
               modelName:self.modelName,
@@ -186,6 +192,7 @@ import { apiUrl } from '../utils/apiUrl';
             axios.post(apiUrl.textTestModel,tData,{
               headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
+              loading.close();
               self.testOutput = response.data.prediction;
               self.testTime = response.data.time;
             }).catch(function (error) {

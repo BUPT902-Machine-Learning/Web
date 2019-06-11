@@ -302,6 +302,12 @@ import { apiUrl } from '../utils/apiUrl';
         const self = this;
         this.$refs["inputTestData"].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在预测，请稍候...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             var username = self.account;
             var tData = JSON.stringify({
               username:username,
@@ -311,9 +317,11 @@ import { apiUrl } from '../utils/apiUrl';
             axios.post(apiUrl.textTestModel,tData,{
               headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
+              loading.close();
               self.testOutput = response.data.prediction;
               self.testTime = response.data.time;
             }).catch(function (error) {
+              loading.close();
               console.log(error);
             });
           }
@@ -356,6 +364,12 @@ import { apiUrl } from '../utils/apiUrl';
 
       confirmSubmit(){
         /** 提交确认函数（按钮） */
+        const loading = this.$loading({
+          lock: true,
+          text: '正在训练，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         var confirmFlag = 0;  //当满足发送条件时置为1
         var tData = {};
         if(this.isChange == 0){
@@ -383,6 +397,7 @@ import { apiUrl } from '../utils/apiUrl';
           headers:{"Content-Type": "application/json;charset=utf-8"}
         })
           .then(function (response) {
+            loading.close();
             var tmp = {
               trainLoss: '',
               trainAccuracy: '',
@@ -401,6 +416,7 @@ import { apiUrl } from '../utils/apiUrl';
             });
           })
           .catch(function (error) {
+            loading.close();
             console.log(error);
           });
       },

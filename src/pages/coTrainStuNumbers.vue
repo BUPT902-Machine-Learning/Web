@@ -64,7 +64,7 @@
               添加样本
             </button>
             <el-dialog title="添加样本" v-if='addSampleVisible' :visible.sync="addSampleVisible" align='center'>
-              <el-form label-width="80px" :model="valueForm" :rules="valueRule" ref="valueForm">
+              <el-form label-width="140px" :model="valueForm" :rules="valueRule" ref="valueForm">
                 <template v-for="(item2, index2) in valueForm.valueData">
                   <el-form-item v-if="item2.type == 1" :label="item2.value" :prop="'valueData.' + index2 +'.inputValue'" :rules="valueRule.inputRule" style="width:50%">
                     <el-input v-model.number="item2.inputValue"></el-input>

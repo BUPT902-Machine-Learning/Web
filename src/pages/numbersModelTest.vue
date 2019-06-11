@@ -27,7 +27,7 @@
       <div class="test_block">
         <el-form ref="test_data" label-width="120px">
           <el-form-item label="测试数据">
-            <el-form label-width="80px" :model="valueForm" :rules="valueRule" ref="valueForm">
+            <el-form label-width="140px" :model="valueForm" :rules="valueRule" ref="valueForm">
               <template v-for="(item, index) in valueForm.valueData">
                 <el-form-item v-if="item.type == 1" :label="item.value" :prop="'valueData.' + index +'.inputValue'" :rules="valueRule.inputRule" style="width:300px;margin-bottom: 20px">
                   <el-input v-model.number="item.inputValue"></el-input>
@@ -243,6 +243,12 @@ import { mapActions, mapState, mapGetters } from "vuex";
         /** 模型测试提交函数 */
         this.$refs["valueForm"].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在预测，请稍候...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.test_data = [];
             for (var item of this.valueForm.valueData){
               this.test_data.push(item.inputValue);
@@ -256,6 +262,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
               headers:{"Content-Type": "application/json;charset=utf-8"}
             })
               .then(function (response) {
+                loading.close()
                 this.test_output = response.data.prediction;
                 this.test_time = response.data.time;
               }.bind(this))

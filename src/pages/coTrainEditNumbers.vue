@@ -75,7 +75,7 @@
               添加样本
             </button>
             <el-dialog title="添加样本" v-if='addSampleVisible' :visible.sync="addSampleVisible" align='center'>
-              <el-form label-width="80px" :model="valueForm" :rules="valueRule" ref="valueForm">
+              <el-form label-width="140px" :model="valueForm" :rules="valueRule" ref="valueForm">
                 <template v-for="(item2, index2) in valueForm.valueData">
                   <el-form-item v-if="item2.type == 1" :label="item2.value" :prop="'valueData.' + index2 +'.inputValue'" :rules="valueRule.inputRule" style="width:50%">
                     <el-input v-model.number="item2.inputValue"></el-input>
@@ -109,7 +109,7 @@
       <div v-if="isSuccess == true" class="test_block">
         <el-form ref="test_data" label-width="120px">
           <el-form-item label="测试数据">
-            <el-form label-width="80px" :model="testValueForm" :rules="valueRule" ref="testValueForm">
+            <el-form label-width="140px" :model="testValueForm" :rules="valueRule" ref="testValueForm">
               <template v-for="(item, index) in testValueForm.valueData">
                 <el-form-item v-if="item.type == 1" :label="item.value" :prop="'valueData.' + index +'.inputValue'" :rules="valueRule.inputRule" style="width:300px;margin-bottom: 20px">
                   <el-input v-model.number="item.inputValue"></el-input>
@@ -376,6 +376,12 @@ import { apiUrl } from '../utils/apiUrl';
         /** 模型测试提交函数 */
         this.$refs["testValueForm"].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在预测，请稍候...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.test_data = [];
             var username = this.account;
             for (var item of this.testValueForm.valueData){
@@ -390,10 +396,12 @@ import { apiUrl } from '../utils/apiUrl';
               headers:{"Content-Type": "application/json;charset=utf-8"}
             })
               .then(function (response) {
+                loading.close();
                 this.test_output = response.data.prediction;
                 this.test_time = response.data.time;
               }.bind(this))
               .catch(function (error) {
+                loading.close();
                 console.log(error);
               });
           }
@@ -436,6 +444,12 @@ import { apiUrl } from '../utils/apiUrl';
 
       confirmSubmit(){
         /** 提交确认函数（按钮） */
+        const loading = this.$loading({
+          lock: true,
+          text: '正在训练，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         var confirmFlag = 0;  //当满足发送条件时置为1
         var tData = {};
         if(this.isChange == 0){
@@ -465,6 +479,7 @@ import { apiUrl } from '../utils/apiUrl';
           headers:{"Content-Type": "application/json;charset=utf-8"}
         })
         .then(function (response) {
+          loading.close();
           var tmp = {
             trainLoss: '',
             trainAccuracy: '',
@@ -482,7 +497,8 @@ import { apiUrl } from '../utils/apiUrl';
           });
         })
         .catch(function (error) {
-        console.log(error);
+          loading.close();
+          console.log(error);
         });
       },
 
