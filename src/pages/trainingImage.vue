@@ -28,24 +28,24 @@
       </div>
 
       <div class="add_label_button">
-        <el-row type="flex" class="row-bg" justify="end">
-          <el-button type="primary" @click="addLabel()">添加标签</el-button>
-          <el-button type="success" @click="submitReTraining()">提交并训练</el-button>
-          <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" align='center'>
-            <el-form :model="addDev" :rules="labelRules" ref="addDev">
-              <el-row>
-                <el-form-item label="标签名称：" style="width:50%" prop="label">
-                  <el-input v-model="addDev.label"></el-input>
-                </el-form-item>
-              </el-row>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="addLabelCancel()">取 消</el-button>
-              <el-button type="primary" @click="addLabelConfirm()">确 定</el-button>
-            </div>
-          </el-dialog>
-        </el-row>
-      </div>
+          <el-row type="flex" class="row-bg" justify="end">
+            <el-button type="primary" @click="addLabel()">添加标签</el-button>
+            <el-button type="success" @click="submitData()">提交并训练</el-button>
+            <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" align='center'>
+              <el-form :model="addDev" :rules="labelRules" ref="addDev">
+                <el-row>
+                  <el-form-item label="标签名称：" style="width:50%" prop="label">
+                    <el-input v-model="addDev.label"></el-input>
+                  </el-form-item>
+                </el-row>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="addLabelCancel()">取 消</el-button>
+                <el-button type="primary" @click="addLabelConfirm()">确 定</el-button>
+              </div>
+            </el-dialog>
+          </el-row>
+        </div>
 
       <div class="mid_block">
         <el-form :model="ruleForm" :rules="rules1" ref="ruleForm" label-width="140px">
@@ -125,7 +125,13 @@
         modelbasePath: '',        //我的模型库跳转路径
         tableData: [
         ],            //存储该模型所有标签、样本信息
-        addDev: {                 //存储某一标签的训练数据
+        labelRules:{
+          label:[
+            {required: true, message: '请输入标签名称', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
+          ]
+        },
+        addDev: {                   //存储某一标签的训练数据
           label: '',                //标签名
           imageId:[],               //上传图片唯一ID
           imageName:[],             //存储样本名
@@ -137,21 +143,15 @@
           model_name: '',
           delete: '',
           label: '',
-          img_name: ''
+          image_name: ''
         },
         modelName: '',             //模型名
         outputData: [],            //存放训练模型的输出结果
-        trainStatus: '',           //模型训练状态
+        trainStatus: '未训练',     //模型训练状态
         ruleForm:{
-          isPublic:''              //模型是否公开
+          isPublic:''        //模型是否公开
         },
-        isChange: 0,               //全局变量，用于判断数据表格是否发生变动
-        labelRules:{
-          label:[
-            {required: true, message: '请输入标签名称', trigger: 'blur'},
-            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
-          ]
-        },
+        isChange: 0,            //全局变量，用于判断数据表格是否发生变动
         rules1:{
           isPublic:[
             {
@@ -160,7 +160,7 @@
               message: '请选择模型权限'
             }
           ]
-        }
+        },
       }
     },
 
@@ -200,7 +200,7 @@
       }
 
       if(self.role == "teacher"){
-        self.modelbasePath = "/modelbaseTeacher";
+        this.modelbasePath = "/modelbaseTeacher";
       }
       else{
         self.modelbasePath = "/modelbaseStudent";
@@ -227,46 +227,28 @@
         console.log(error);
       });
 
-      var modelEditData = JSON.stringify({
+      var modelCreateData = JSON.stringify({
         userName:self.account,
         modelName:self.modelName
       })
-
-      axios.post(apiUrl.StatusCheck,modelEditData,{
+      axios.post(apiUrl.createImgModel,modelCreateData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
-        if(response.data == 0){
-          self.trainStatus = "未训练";
-        }else if(response.data == 1){
-          self.trainStatus = "训练中";
-        }else {
-          self.trainStatus = "已训练";
+        console.log(response);
+        if(response.data == "Create Image Model Success!"){
+          self.$message({
+            type: 'success',
+            message: "创建模型成功！"
+          });
         }
-      }).catch(function (error) {
-        console.log(error);
-      });
-
-      axios.post(apiUrl.editImgModel,modelEditData,{
-        headers:{"Content-Type": "application/json;charset=utf-8"}
-      }).then(function (response) {
-        //训练数据恢复
-        var tmpTable = response.data.tableData;
-        if(response.data.publicStatus == '1'){
-          self.ruleForm.isPublic = '1';
+        else if(response.data == "Model Name Check Failed!"){
+          self.$alert('该模型名已存在，请转至编辑模型页面', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              window.location.href = self.modelbasePath;
+            }
+          });
         }
-        else{
-          self.ruleForm.isPublic = '0';
-        }
-        tmpTable.forEach(element => {
-          var tmpDev = {};
-          tmpDev.label = element.label;
-          tmpDev.imageName = element.image_name;
-          tmpDev.contents = element.contents;
-          tmpDev.imageId = element.image_id;
-          self.tableData.push(tmpDev);
-        })
-        console.log(self.tableData);
-
       }).catch(function (error) {
         console.log(error);
       });
@@ -287,11 +269,12 @@
         }).then(function (response) {
           if(response.data == "logic delete Success"){
             console.log("图片删除成功！")
+            self.isChange = 1;
           }
         }).catch(function (error) {
           console.log(error);
         });
-        self.isChange = 1;
+
       },
       myModelBase(){
         /** 我的模型库跳转函数 */
@@ -315,6 +298,7 @@
         this.addDev.imageName = [];
         this.addDev.imageId = [];
         this.addLabelVisible = true;
+        this.isChange = 1;
       },
 
       addLabelConfirm(){
@@ -412,14 +396,16 @@
         // 限制图片尺寸（不得过大或者过小）
         this.uploadData.delete = '0';
         this.uploadData.image_name = file.name;
-        self.isChange = 1;
+      },
+      handleErr(err, file, fileList){
+        alert(err);
       },
 
       handleSuccess(response, file, fileList){
-        if(response == "Name Check Failed!") {
+        if(response["save_status"] == "failed") {
           this.$message({
             type: 'error',
-            message: "文件名重复，上传失败"
+            message: "文件上传失败"
           });
           fileList.splice(fileList.indexOf(file),1);
         }
@@ -427,8 +413,10 @@
           // 将上传的图片信息（文件路径）存储在tableData中
           for(var item of this.tableData){
             if(item.label == this.uploadData.label){
+              item.imageId.push(response["image_id"]);
               item.imageName.push(file.name);
               item.contents.push(file.url);
+              console.log(this.tableData)
               break;
             }
           }
@@ -437,76 +425,41 @@
         self.isChange = 1;
       },
 
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
+      // beforeRemove(file, fileList) {
+      //   return this.$confirm(`确定移除 ${ file.name }？`);
+      // },
+      //
+      // handleRemove(file, fileList) {
+      //   const self = this;
+      //   var deleteLabel = '';
+      //   for(var item of self.tableData){
+      //     for(var content of item.contents){
+      //       if(content == file.name){
+      //         item.contents.splice(item.contents.indexOf(content),1);
+      //         deleteLabel = item.label;
+      //         var delete_id = item.imageId[item.contents.indexOf(content)]
+      //       }
+      //     }
+      //   }
+      //   //向后台发送请求，删除该图片文件（逻辑删除）
+      //   let formData = new FormData();
+      //   formData.append('image_id', delete_id);
+      //   console.log(formData)
+      //   axios.post(apiUrl.deleteImg,formData,{
+      //     headers:{"Content-Type": "application/json;charset=utf-8"}
+      //   }).then(function (response) {
+      //     if(response.data == "logic delete Success"){
+      //       this.$message({
+      //         type: 'success',
+      //         message: "图片删除成功"
+      //       });
+      //     }
+      //   }.bind(this)).catch(function (error) {
+      //     console.log(error);
+      //   });
+      // },
 
-      handleRemove(file, fileList) {
-        const self = this;
-        var deleteLabel = '';
-        for(var item of self.tableData){
-          for(var content of item.contents){
-            if(content == file.name){
-              item.contents.splice(item.contents.indexOf(content),1);
-              deleteLabel = item.label;
-            }
-          }
-        }
-        self.isChange = 1;
-        //向后台发送请求，删除该图片文件（逻辑删除）
-        let formData = new FormData();
-        formData.append('modelName', self.modelName);
-        formData.append('delete', '1');
-        formData.append('label', deleteLabel);
-        formData.append('imgName', file.name);
-        axios.post(apiUrl.deleteImg,formData,{
-          headers:{"Content-Type": "application/json;charset=utf-8"}
-        }).then(function (response) {
-          if(response.data == "logic delete Success"){
-            self.$message({
-              type: 'success',
-              message: "图片删除成功"
-            });
-          }
-        }).catch(function (error) {
-          console.log(error);
-        });
-      },
-
-      submitReTraining(){
-        // /** 提交并训练函数 */
-        // const self = this;
-        // var labels = [];
-        // for(var item of this.tableData){
-        //   labels.push(item.label);
-        // }
-        // //提交训练数据确认函数
-        // this.$confirm('是否提交?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: "训练提交成功，正在训练！"
-        //   });
-        //   var uData = JSON.stringify({
-        //     isChange: this.isChange,
-        //     userName:this.account,
-        //     modelName:this.modelName,
-        //     label:labels,
-        //     publicStatus:this.ruleForm.isPublic
-        //   })
-        //   axios.post(apiUrl.reTrainImgModel,uData,{
-        //     headers:{"Content-Type": "application/json;charset=utf-8"}
-        //   }).then(function (response) {
-        //     console.log(response.data)
-        //     self.isChange = 0;
-        //   }).catch(function (error) {
-        //     console.log(error);
-        //   });
-        // })
-
+      submitData(){
         /** 提交并训练函数 */
         const self = this;
         var tmp = false;
@@ -541,7 +494,7 @@
           labels.push(item.label);
         }
         //提交训练数据确认函数
-        if(tmp == false) {
+        if(tmp == false){
           this.$refs["ruleForm"].validate((valid) => {
             if (valid) {
               this.$confirm('是否提交?', '提示', {
@@ -554,14 +507,14 @@
                   message: "训练提交成功，正在训练！"
                 });
                 var uData = JSON.stringify({
-                  userName: this.account,
-                  modelName: this.modelName,
-                  label: labels,
-                  publicStatus: this.ruleForm.isPublic,
+                  userName:this.account,
+                  modelName:this.modelName,
+                  label:labels,
+                  publicStatus:this.ruleForm.isPublic,
                   isChange: this.isChange
                 })
-                axios.post(apiUrl.trainImgModel, uData, {
-                  headers: {"Content-Type": "application/json;charset=utf-8"}
+                axios.post(apiUrl.trainImgModel,uData,{
+                  headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
                   console.log(response.data)
                   self.isChange = 0;
