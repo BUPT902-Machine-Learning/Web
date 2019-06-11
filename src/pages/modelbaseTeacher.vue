@@ -19,6 +19,9 @@
         <div class="my_model_block">
             <img class = "model_pic" src = '../assets/myModel.png'  style="width:50px;height:50px;">
             <span style="font-size:25px;">我的模型</span>
+            <el-row type="flex" class="row-bg" justify="end">
+              <el-button type="primary" @click="buildNewModel()">训练新模型</el-button>
+            </el-row>
             <el-table ref="multipleTable" :data="teacherData" tooltip-effect="dark" size = "medium" style="width: 100%" >
                 <el-table-column property="Number" label="编号" type="index" align='center' width="150px"></el-table-column>
 
@@ -32,18 +35,16 @@
 
                 <el-table-column property="UpdateTime" label="更新时间" align='center'></el-table-column>
 
-                <el-table-column label="操作" align='center'>
+                <el-table-column label="操作" align='center' width="300px">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="testMyModel(scope.row)">测试模型</el-button>
-                        <el-button size="mini" type="text" @click="editModel(scope.row)">修改模型</el-button>
-                        <el-button size="mini" type="text" @click="deleteModel(scope.row, scope.$index)">删除模型</el-button>
+                      <el-button-group>
+                        <el-button size="mini" type="success" @click="testMyModel(scope.row)" icon="el-icon-check" plain>测试</el-button>
+                        <el-button size="mini" type="primary" @click="editModel(scope.row)" icon="el-icon-edit" plain>修改</el-button>
+                        <el-button size="mini" type="danger" @click="deleteModel(scope.row, scope.$index)" icon="el-icon-delete" plain>删除</el-button>
+                      </el-button-group>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-row type="flex" class="row-bg" justify="end">
-                <el-button type="primary" @click="buildNewModel()">训练新模型</el-button>
-                <el-button type="success" @click="myTurntoScratch()">进入Scratch3</el-button>
-            </el-row>
         </div>
 
         <div class="teacher_model_block">
@@ -66,8 +67,7 @@
 
                 <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="testSModel(scope.row)">测试模型</el-button>
-                        <el-button size="mini" type="text" @click="turntoScratch(scope.row)">应用模型</el-button>
+                      <el-button size="mini" type="success" @click="testSModel(scope.row)" icon="el-icon-check" plain>测试</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -87,11 +87,13 @@
 
                 <el-table-column property="UpdateTime" label="更新时间" align='center'></el-table-column>
 
-                <el-table-column label="操作" align='center'>
+                <el-table-column label="操作" align='center' width="300px">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" @click="cooperateTurntoScratch(scope.row)">应用模型</el-button>
-                        <el-button size="mini" type="text" @click="editCooperateModel(scope.row)">训练模型(修改模型)</el-button>
-                        <el-button size="mini" type="text" @click="deleteCooperateModel(scope.row, scope.$index)">删除模型</el-button>
+                      <el-button-group>
+                        <el-button size="mini" type="success" @click="cooperateTurntoScratch(scope.row)" icon="el-icon-check" plain>scratch</el-button>
+                        <el-button size="mini" type="primary" @click="editCooperateModel(scope.row)" icon="el-icon-edit" plain>训练(修改)</el-button>
+                        <el-button size="mini" type="danger" @click="deleteCooperateModel(scope.row, scope.$index)" icon="el-icon-delete" plain>删除</el-button>
+                      </el-button-group>
                     </template>
                 </el-table-column>
             </el-table>
