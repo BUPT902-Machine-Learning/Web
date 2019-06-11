@@ -24,7 +24,7 @@
         <img src = '../assets/images/model_name.png'  style="width:50px;height:50px;margin-right: 20px;">
         <span class="model_type">{{modelName}}</span>
         <img src = '../assets/images/model_type.png'  style="width:50px;height:50px;margin-left: 200px;margin-right: 20px">
-        <span class="model_type">文本</span>
+        <span class="model_type">图像</span>
       </div>
 
       <div class="add_label_button">
