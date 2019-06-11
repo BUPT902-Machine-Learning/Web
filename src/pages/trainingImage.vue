@@ -470,6 +470,13 @@
           });
           tmp = true;
         }
+        else if(this.tableData.length < 2){
+          this.$message({
+            type: 'error',
+            message: "训练标签数至少为2"
+          });
+          tmp = true;
+        }
         else{
           for (var item of this.tableData) {
             if(item.contents.length == 0){

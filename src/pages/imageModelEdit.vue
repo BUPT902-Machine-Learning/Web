@@ -474,38 +474,104 @@
       },
 
       submitReTraining(){
+        // /** 提交并训练函数 */
+        // const self = this;
+        // var labels = [];
+        // for(var item of this.tableData){
+        //   labels.push(item.label);
+        // }
+        // //提交训练数据确认函数
+        // this.$confirm('是否提交?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //   this.$message({
+        //     type: 'success',
+        //     message: "训练提交成功，正在训练！"
+        //   });
+        //   var uData = JSON.stringify({
+        //     isChange: this.isChange,
+        //     userName:this.account,
+        //     modelName:this.modelName,
+        //     label:labels,
+        //     publicStatus:this.ruleForm.isPublic
+        //   })
+        //   axios.post(apiUrl.reTrainImgModel,uData,{
+        //     headers:{"Content-Type": "application/json;charset=utf-8"}
+        //   }).then(function (response) {
+        //     console.log(response.data)
+        //     self.isChange = 0;
+        //   }).catch(function (error) {
+        //     console.log(error);
+        //   });
+        // })
+
         /** 提交并训练函数 */
         const self = this;
+        var tmp = false;
+        if(this.tableData.length == 0){
+          this.$message({
+            type: 'error',
+            message: "训练数据不能为空"
+          });
+          tmp = true;
+        }
+        else if(this.tableData.length < 2){
+          this.$message({
+            type: 'error',
+            message: "训练标签数至少为2"
+          });
+          tmp = true;
+        }
+        else{
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
+              this.$message({
+                type: 'error',
+                message: "训练样本不能为空"
+              });
+              tmp = true;
+              break;
+            }
+          }
+        }
         var labels = [];
         for(var item of this.tableData){
           labels.push(item.label);
         }
         //提交训练数据确认函数
-        this.$confirm('是否提交?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: "训练提交成功，正在训练！"
+        if(tmp == false) {
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              this.$confirm('是否提交?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$message({
+                  type: 'success',
+                  message: "训练提交成功，正在训练！"
+                });
+                var uData = JSON.stringify({
+                  userName: this.account,
+                  modelName: this.modelName,
+                  label: labels,
+                  publicStatus: this.ruleForm.isPublic,
+                  isChange: this.isChange
+                })
+                axios.post(apiUrl.trainImgModel, uData, {
+                  headers: {"Content-Type": "application/json;charset=utf-8"}
+                }).then(function (response) {
+                  console.log(response.data)
+                  self.isChange = 0;
+                }).catch(function (error) {
+                  console.log(error);
+                });
+              })
+            }
           });
-          var uData = JSON.stringify({
-            isChange: this.isChange,
-            userName:this.account,
-            modelName:this.modelName,
-            label:labels,
-            publicStatus:this.ruleForm.isPublic
-          })
-          axios.post(apiUrl.reTrainImgModel,uData,{
-            headers:{"Content-Type": "application/json;charset=utf-8"}
-          }).then(function (response) {
-            console.log(response.data)
-            self.isChange = 0;
-          }).catch(function (error) {
-            console.log(error);
-          });
-        })
+        }
       }
     }
   }
