@@ -131,8 +131,9 @@
             {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
           ]
         },
-        addDev: {                 //存储某一标签的训练数据
+        addDev: {                   //存储某一标签的训练数据
           label: '',                //标签名
+          imageId:[],               //上传图片唯一ID
           imageName:[],             //存储样本名
           contents:[]               //标签所属的样本URL
         },
@@ -150,7 +151,7 @@
         ruleForm:{
           isPublic:''        //模型是否公开
         },
-        //isChange: 0,            //全局变量，用于判断数据表格是否发生变动
+        isChange: 0,            //全局变量，用于判断数据表格是否发生变动
         rules1:{
           isPublic:[
             {
@@ -233,16 +234,19 @@
       axios.post(apiUrl.createImgModel,modelCreateData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
-        if(response == "Create Image Model Success!"){
-          this.$message({
+        console.log(response);
+        if(response.data == "Create Image Model Success!"){
+          self.$message({
             type: 'success',
             message: "创建模型成功！"
           });
         }
-        else if(response == "Model Name Check Failed!"){
-          this.$message({
-            type: 'error',
-            message: "模型名重复，请重新创建！"
+        else if(response.data == "Model Name Check Failed!"){
+          self.$alert('该模型名已存在，请转至编辑模型页面', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              window.location.href = self.modelbasePath;
+            }
           });
         }
       }).catch(function (error) {
@@ -253,27 +257,24 @@
     methods: {
       deleteImage(index,index2){
         const self = this;
-        console.log(self.tableData);
-        console.log(index);
-        console.log(index2);
-        var deleteName = self.tableData[index].imageName[index2];
-        var deleteLabel = self.tableData[index].label;
+        var deleteId = self.tableData[index].imageId[index2];
         self.tableData[index].imageName.splice(index2,1);
         self.tableData[index].contents.splice(index2,1);
+        self.tableData[index].imageId.splice(index2,1);
         //向后台发送请求，删除该图片文件（逻辑删除）
         let formData = new FormData();
-        formData.append('modelName', self.modelName);
-        formData.append('label', deleteLabel);
-        formData.append('imgName', deleteName);
+        formData.append('image_id', deleteId);
         axios.post(apiUrl.deleteImg,formData,{
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
             console.log("图片删除成功！")
+            self.isChange = 1;
           }
         }).catch(function (error) {
           console.log(error);
         });
+
       },
       myModelBase(){
         /** 我的模型库跳转函数 */
@@ -295,6 +296,7 @@
         this.addDev.label = "";
         this.addDev.contents = [];
         this.addDev.imageName = [];
+        this.addDev.imageId = [];
         this.addLabelVisible = true;
         this.isChange = 1;
       },
@@ -306,6 +308,7 @@
         tmp.label = this.addDev.label;
         tmp.imageName = [];
         tmp.contents = [];
+        tmp.imageId = [];
         for(var item of this.tableData){
           if(item.label == tmp.label){
             checkFlag = true;
@@ -347,6 +350,7 @@
         this.addDev.label = '';
         this.addDev.contents = [];
         this.addDev.imageName = [];
+        this.addDev.imageId = [];
       },
       deleteLabel(item){
         this.$confirm(`确定移除 标签： ${ item.label }？`, '提示',
@@ -369,6 +373,7 @@
                 type: 'success',
                 message: "标签删除成功"
               });
+              this.isChange = 1;
             }
           }.bind(this)).catch(function (error) {
             console.log(error);
@@ -383,6 +388,7 @@
         self.uploadData.account = self.account;
         self.uploadData.model_name = self.modelName;
         self.uploadData.label = item.label;
+        self.isChange = 1;
       },
 
       beforeUpload(file){
@@ -391,12 +397,15 @@
         this.uploadData.delete = '0';
         this.uploadData.image_name = file.name;
       },
+      handleErr(err, file, fileList){
+        alert(err);
+      },
 
       handleSuccess(response, file, fileList){
-        if(response == "Name Check Failed!") {
+        if(response["save_status"] == "failed") {
           this.$message({
             type: 'error',
-            message: "文件名重复，上传失败"
+            message: "文件上传失败"
           });
           fileList.splice(fileList.indexOf(file),1);
         }
@@ -404,52 +413,55 @@
           // 将上传的图片信息（文件路径）存储在tableData中
           for(var item of this.tableData){
             if(item.label == this.uploadData.label){
+              item.imageId.push(response["image_id"]);
               item.imageName.push(file.name);
               item.contents.push(file.url);
+              console.log(this.tableData)
               break;
             }
           }
         }
         self.uploadData = {};
+        self.isChange = 1;
       },
 
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
-
-      handleRemove(file, fileList) {
-        const self = this;
-        var deleteLabel = '';
-        for(var item of self.tableData){
-          for(var content of item.contents){
-            if(content == file.name){
-              item.contents.splice(item.contents.indexOf(content),1);
-              deleteLabel = item.label;
-            }
-          }
-        }
-        //向后台发送请求，删除该图片文件（逻辑删除）
-        let formData = new FormData();
-        formData.append('modelName', self.modelName);
-        formData.append('delete', '1');
-        formData.append('label', deleteLabel);
-        formData.append('imgName', file.name);
-        axios.post(apiUrl.deleteImg,formData,{
-          headers:{"Content-Type": "application/json;charset=utf-8"}
-        }).then(function (response) {
-          if(response.data == "logic delete Success"){
-            this.$message({
-              type: 'success',
-              message: "图片删除成功"
-            });
-          }
-        }.bind(this)).catch(function (error) {
-          console.log(error);
-        });
-      },
+      // beforeRemove(file, fileList) {
+      //   return this.$confirm(`确定移除 ${ file.name }？`);
+      // },
+      //
+      // handleRemove(file, fileList) {
+      //   const self = this;
+      //   var deleteLabel = '';
+      //   for(var item of self.tableData){
+      //     for(var content of item.contents){
+      //       if(content == file.name){
+      //         item.contents.splice(item.contents.indexOf(content),1);
+      //         deleteLabel = item.label;
+      //         var delete_id = item.imageId[item.contents.indexOf(content)]
+      //       }
+      //     }
+      //   }
+      //   //向后台发送请求，删除该图片文件（逻辑删除）
+      //   let formData = new FormData();
+      //   formData.append('image_id', delete_id);
+      //   console.log(formData)
+      //   axios.post(apiUrl.deleteImg,formData,{
+      //     headers:{"Content-Type": "application/json;charset=utf-8"}
+      //   }).then(function (response) {
+      //     if(response.data == "logic delete Success"){
+      //       this.$message({
+      //         type: 'success',
+      //         message: "图片删除成功"
+      //       });
+      //     }
+      //   }.bind(this)).catch(function (error) {
+      //     console.log(error);
+      //   });
+      // },
 
       submitData(){
         /** 提交并训练函数 */
+        const self = this;
         var tmp = false;
         if(this.tableData.length == 0){
           this.$message({
@@ -491,12 +503,14 @@
                   userName:this.account,
                   modelName:this.modelName,
                   label:labels,
-                  publicStatus:this.ruleForm.isPublic
+                  publicStatus:this.ruleForm.isPublic,
+                  isChange: this.isChange
                 })
                 axios.post(apiUrl.trainImgModel,uData,{
                   headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
                   console.log(response.data)
+                  self.isChange = 0;
                 }).catch(function (error) {
                   console.log(error);
                 });
