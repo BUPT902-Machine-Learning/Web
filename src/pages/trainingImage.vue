@@ -502,10 +502,16 @@
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                this.$message({
-                  type: 'success',
-                  message: "训练提交成功，正在训练！"
+                const loading = this.$loading({
+                  lock: true,
+                  text: '正在训练，请稍候...',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0, 0, 0, 0.7)'
                 });
+                // this.$message({
+                //   type: 'success',
+                //   message: "训练提交成功，正在训练！"
+                // });
                 var uData = JSON.stringify({
                   userName:this.account,
                   modelName:this.modelName,
@@ -516,9 +522,10 @@
                 axios.post(apiUrl.trainImgModel,uData,{
                   headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
-                  console.log(response.data)
+                  loading.close();
                   self.isChange = 0;
                 }).catch(function (error) {
+                  loading.close();
                   console.log(error);
                 });
               })
