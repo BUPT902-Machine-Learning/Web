@@ -18,9 +18,9 @@
     </div>
     <div class="main_container">
       <div class="model_part">
-        <img src = '../assets/images/model_name.png'  style="width:50px;height:50px;margin-right: 20px;">
+        <img src = '../assets/images/name.png'  style="width:50px;height:50px;margin-right: 20px;">
         <span class="model_type">{{modelName}}</span>
-        <img src = '../assets/images/model_type.png'  style="width:50px;height:50px;margin-left: 200px;margin-right: 20px">
+        <img src = '../assets/images/type.png'  style="width:50px;height:50px;margin-left: 100px;margin-right: 20px">
         <span class="model_type">数字</span>
       </div>
       <div class="top_train_block">
@@ -809,7 +809,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
 
 <style>
   .model_part{
-    padding-left: 35%;
+    margin-left: 100px;
     height: 50px;
   }
   .main_container{
@@ -818,7 +818,7 @@ import { mapActions, mapState, mapGetters } from "vuex";
     margin-right: 150px;
   }
   .model_type{
-    position: absolute;
+    position: relative;
     font-size:30px;
     line-height:50px;
     display:inline-block;
