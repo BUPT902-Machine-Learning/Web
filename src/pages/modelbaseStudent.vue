@@ -270,12 +270,12 @@ export default {
             self.ifTrain = apiUrl.numbersIfTrain;
           }
           else{
-            self.ifTrain = apiUrl.numbersIfTrain;
+            self.ifTrain = apiUrl.imageIfTrain;
           }
             axios.post(self.ifTrain,uData,{    
                 headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
-                if(response.data == "模型已训练"){
+                if(response.data === "模型已训练" || response.data === "模型训练中"){
                   self.$message({
                     type: 'error',
                     message: "模型已训练，无法提交数据"
@@ -304,20 +304,20 @@ export default {
           var self = this;
           if(row.DataType == "图像"){
             var uData = JSON.stringify({
-              userName:self.account,
+              username:row.teacherName,
               modelName:row.ModelName
             })
-            axios.post(apiUrl.StatusCheck,uData,{
+            axios.post(apiUrl.imageIfTrain,uData,{
               headers:{"Content-Type": "application/json;charset=utf-8"}
             }).then(function (response) {
               /**When logincheck is failed, turn to tuopinpin.com */
-              if(response.data == 0){
+              if(response.data == "模型未训练"){
                 self.$message({
                   type: 'error',
                   message: "模型未训练，无法使用！"
                 });
               }
-              else if(response.data == 1){
+              else if(response.data == "模型训练中"){
                 self.$message({
                   type: 'info',
                   message: "模型训练中，请稍后！"
@@ -342,23 +342,23 @@ export default {
         var self = this;
         if(row.DataType == "图像"){
           var uData = JSON.stringify({
-            userName:row.TeacherName,
+            username:row.TeacherName,
             modelName:row.ModelName
           })
-          axios.post(apiUrl.StatusCheck,uData,{
+          axios.post(apiUrl.imageIfTrain,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
-            if(response.data == 0){
+            if(response.data == "模型未训练"){
               self.$message({
                 type: 'error',
                 message: "模型未训练，无法使用！"
               });
             }
-            else if(response.data == 1){
+            else if(response.data == "模型训练中"){
               self.$message({
                 type: 'info',
-                message: "模型训练中，请稍后"
+                message: "模型训练中，请稍后！"
               });
             }
             else{
@@ -448,17 +448,17 @@ export default {
             }
             else{
               var uData = JSON.stringify({
-                userName:self.account,
+                username:row.teacherName,
                 modelName:row.ModelName
               })
-              axios.post(apiUrl.StatusCheck,uData,{
+              axios.post(apiUrl.imageIfTrain,uData,{
                 headers:{"Content-Type": "application/json;charset=utf-8"}
               })
                 .then(function (response) {
                   var temp = response.data;
-                  if(temp == 0){
+                  if(temp === "模型未训练"){
                     var modelStatus = "未训练";
-                  }else if(temp == 1){
+                  }else if(temp === "模型训练中"){
                     var modelStatus = "训练中";
                   }else{
                     var modelStatus = "已训练";

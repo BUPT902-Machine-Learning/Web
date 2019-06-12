@@ -259,20 +259,20 @@ export default {
         var self = this;
         if(row.DataType == "图像"){
           var uData = JSON.stringify({
-            userName:self.account,
+            username:self.account,
             modelName:row.ModelName
           })
-          axios.post(apiUrl.StatusCheck,uData,{
+          axios.post(apiUrl.imageIfTrain,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
-            if(response.data == 0){
+            if(response.data === "模型未训练"){
               self.$message({
                 type: 'error',
                 message: "模型未训练，无法使用！"
               });
             }
-            else if(response.data == 1){
+            else if(response.data === "模型训练中"){
               self.$message({
                 type: 'info',
                 message: "模型训练中，请稍后"
@@ -297,23 +297,23 @@ export default {
         var self = this;
         if(row.DataType == "图像"){
           var uData = JSON.stringify({
-            userName:row.StudentName,
+            username:row.StudentName,
             modelName:row.ModelName
           })
-          axios.post(apiUrl.StatusCheck,uData,{
+          axios.post(apiUrl.imageIfTrain,uData,{
             headers:{"Content-Type": "application/json;charset=utf-8"}
           }).then(function (response) {
             /**When logincheck is failed, turn to tuopinpin.com */
-            if(response.data == 0){
+            if(response.data == "模型未训练"){
               self.$message({
                 type: 'error',
                 message: "模型未训练，无法使用！"
               });
             }
-            else if(response.data == 1){
+            else if(response.data == "模型训练中"){
               self.$message({
                 type: 'info',
-                message: "模型训练中，请稍后"
+                message: "模型训练中，请稍后！"
               });
             }
             else{
@@ -372,17 +372,17 @@ export default {
           }
           else{
               var uData = JSON.stringify({
-                  userName:self.account,
+                  username:self.account,
                   modelName:row.ModelName
               })
-              axios.post(apiUrl.StatusCheck,uData,{    
+              axios.post(apiUrl.imageIfTrain,uData,{    
                   headers:{"Content-Type": "application/json;charset=utf-8"}
               })
               .then(function (response) {
                   var temp = response.data;
-                  if(temp == 0){
+                  if(temp === "模型未训练"){
                       var modelStatus = "未训练";
-                  }else if(temp == 1){
+                  }else if(temp === "模型训练中"){
                       var modelStatus = "训练中";
                   }else{
                       var modelStatus = "已训练";
@@ -415,7 +415,7 @@ export default {
               self.$router.push({name:'coTrainEditNumbers',params:{modelName:row.ModelName}});
             }
             else{
-              self.$router.push({name:'coTrainEditNumbers',params:{modelName:row.ModelName}});
+              self.$router.push({name:'coTrainEditImage',params:{modelName:row.ModelName}});
             }
         },
         deleteCooperateModel(row, index){

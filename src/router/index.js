@@ -30,6 +30,10 @@ const numbersModelTestPage = resolve => require(["src/pages/numbersModelTest"], 
 const imageModelTestPage = resolve => require(["src/pages/imageModelTest"], resolve);
 const imageModelEditPage = resolve => require(["src/pages/imageModelEdit"], resolve);
 
+const coTrainTeaImagePage = resolve => require(["src/pages/coTrainTeaImage"], resolve);
+const coTrainStuImagePage = resolve => require(["src/pages/coTrainStuImage"], resolve);
+const coTrainEditImagePage = resolve => require(["src/pages/coTrainEditImage"], resolve);
+
 const router = new VueRouter({
 	mode: 'hash',
 	routes: [
@@ -38,6 +42,21 @@ const router = new VueRouter({
 			path: '/',
 			component:modelbaseStudentPage
 		},
+    {
+      name: 'coTrainEditImage',
+      path: '/coTrainEditImage/:modelName',
+      component:coTrainEditImagePage
+    },
+    {
+      name: 'coTrainTeaImage',
+      path: '/coTrainTeaImage/:modelName',
+      component:coTrainTeaImagePage
+    },
+    {
+      name: 'coTrainStuImage',
+      path: '/coTrainStuImage/:teacherName/:modelName',
+      component:coTrainStuImagePage
+    },
 		{
 			name: 'imageModelEdit',
 			path: '/imageModelEdit/:userName/:modelName/:modelStatus',
