@@ -1,6 +1,10 @@
 <template>
   <div class="fillcontain">
     <div class="app-head">
+      <div class="machine-learning">
+        <img class="machine-learning-img" src="../assets/images/machine_learning.svg">
+        <span class="machine-learning-text">Machine Learning</span>
+      </div>
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
@@ -18,9 +22,9 @@
     </div>
     <div class="main_container">
       <div class="model_part">
-        <img class="model_type" src = '../assets/images/name.png'  style="width:50px;height:50px;margin-right: 20px;">
+        <img class="model_type" src = '../assets/images/name.png'  style="width:40px;height:40px;margin-right: 30px;">
         <span class="model_type">{{modelName}}</span>
-        <img class="model_type" src = '../assets/images/type.png'  style="width:50px;height:50px;margin-left: 100px;margin-right: 20px">
+        <img class="model_type" src = '../assets/images/type.png'  style="width:40px;height:40px;margin-left: 150px;margin-right: 30px">
         <span class="model_type">文本</span>
       </div>
 
@@ -207,9 +211,26 @@ import { apiUrl } from '../utils/apiUrl';
 </script>
 
 <style>
+  .machine-learning-img {
+    margin: 10px 20px 0 60px;
+    float:left;
+    height: 70px;
+  }
+  .machine-learning-text{
+    float:left;
+    font-size: 2.5em;
+    font-family:Tiger;
+    margin-top: 10px;
+    background: #EEE url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAHklEQVQImWNkYGBgYGD4//8/A5wF5SBYyAr+//8PAPOCFO0Q2zq7AAAAAElFTkSuQmCC) repeat;
+    text-shadow: -5px -5px white, -4px -4px rgba(197, 223, 248,0.8);
+    font-weight: bold;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+  }
   .model_part{
-    margin-left: 100px;
+    margin: 0 100px 0 100px;
     height: 50px;
+    border-bottom:3px solid #0086b3;
   }
   .main_container{
     margin-top: 30px;
@@ -217,7 +238,9 @@ import { apiUrl } from '../utils/apiUrl';
     margin-right: 150px;
   }
   .model_type{
-    font-size:30px;
+    color: #00008b;
+    font-size:2.0em;
+    font-weight: 600;
     line-height:50px;
     float:left;
   }
@@ -227,7 +250,7 @@ import { apiUrl } from '../utils/apiUrl';
   }
   .top_train_block{
     margin-top: 30px;
-    margin-left: 130px;
+    margin-right: 150px;
   }
   .mid_block{
     margin-top: -20px;

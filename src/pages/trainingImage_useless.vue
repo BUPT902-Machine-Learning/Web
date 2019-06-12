@@ -2,6 +2,10 @@
   <div class="fillcontain">
 
     <div class="app-head">
+      <div class="machine-learning">
+        <img class="machine-learning-img" src="../assets/images/machine_learning.svg">
+        <span class="machine-learning-text">Machine Learning</span>
+      </div>
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
@@ -516,7 +520,7 @@ import coTrainStuTextVue from './coTrainStuText.vue';
   }
   .top_train_block{
     margin-top: 30px;
-    margin-left: 130px;
+    margin-right: 150px;
   }
   .foot_block{
     margin-top: 30px;

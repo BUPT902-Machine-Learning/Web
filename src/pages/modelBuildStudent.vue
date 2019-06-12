@@ -1,6 +1,10 @@
     <template>
  <div class="fillcontain">
      <div class="app-head">
+       <div class="machine-learning">
+         <img class="machine-learning-img" src="../assets/images/machine_learning.svg">
+         <span class="machine-learning-text">Machine Learning</span>
+       </div>
       <div class="app-head-inner">
         <div class="head-nav">
           <ul class="nav-list">
@@ -216,6 +220,22 @@ import { apiUrl } from '../utils/apiUrl';
 </script>
 
 <style>
+  .machine-learning-img {
+    margin: 10px 20px 0 60px;
+    float:left;
+    height: 70px;
+  }
+  .machine-learning-text{
+    float:left;
+    font-size: 2.5em;
+    font-family:Tiger;
+    margin-top: 10px;
+    background: #EEE url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAHklEQVQImWNkYGBgYGD4//8/A5wF5SBYyAr+//8PAPOCFO0Q2zq7AAAAAElFTkSuQmCC) repeat;
+    text-shadow: -5px -5px white, -4px -4px rgba(197, 223, 248,0.8);
+    font-weight: bold;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+  }
   .top_build_block{
     margin-top: 300px;
     margin-left: 830px;
