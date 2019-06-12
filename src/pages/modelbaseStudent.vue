@@ -562,6 +562,7 @@ export default {
     -webkit-background-clip: text;
   }
   .my_model_block{
+    margin-top: 50px;
     margin-left: 300px;
     margin-right: 300px;
   }

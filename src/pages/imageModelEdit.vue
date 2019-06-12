@@ -31,7 +31,7 @@
         <span class="model_type">图像</span>
       </div>
 
-      <div class="add_label_button">
+      <div class="top_train_block">
         <el-row type="flex" class="row-bg" justify="end">
           <el-button type="primary" @click="addLabel()">添加标签</el-button>
           <el-button type="success" @click="submitReTraining()">提交并训练</el-button>
@@ -685,9 +685,9 @@
     margin-left: 10px;
     color:#999999;
   }
-  .add_label_button{
+  .top_train_block{
     margin-top: 30px;
-    margin-left: 130px;
+    margin-right: 150px;
   }
   .mid_block{
     margin-top: -20px;
