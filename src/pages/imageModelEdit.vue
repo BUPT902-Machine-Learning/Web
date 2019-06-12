@@ -209,7 +209,6 @@
     mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
-      self.testModelBuilder = self.$route.params.userName;
       var csrfTokenName = "csrftoken=";
       var tokenName = "token=";
       var userName = "username=";
@@ -454,7 +453,7 @@
       selectTestImg(){
         // 将模型名、标签名跟随图片文件传送到Django后端
         const self = this;
-        self.uploadTestData.account = self.testModelBuilder;
+        self.uploadTestData.account = self.account;
         self.uploadTestData.modelName = self.modelName;
       },
 

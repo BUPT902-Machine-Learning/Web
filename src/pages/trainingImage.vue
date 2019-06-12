@@ -311,13 +311,18 @@
           headers:{"Content-Type": "application/json;charset=utf-8"}
         }).then(function (response) {
           if(response.data == "logic delete Success"){
-            console.log("图片删除成功！")
-            self.isChange = 1;
+            self.$message({
+              type: 'success',
+              message: "删除图片成功"
+            });
           }
         }).catch(function (error) {
-          console.log(error);
+          self.$message({
+            type: 'error',
+            message: "删除图片失败"
+          });
         });
-
+        self.isChange = 1;
       },
       myModelBase(){
         /** 我的模型库跳转函数 */

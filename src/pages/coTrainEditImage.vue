@@ -29,8 +29,9 @@
 
       <div class="add_label_button">
         <el-row type="flex" class="row-bg" justify="end">
-          <el-button type="success" @click="addLabel()">添加标签</el-button>
+          <el-button type="primary" @click="addLabel()">添加标签</el-button>
           <el-button type="primary" @click="publishModel()">发布模型</el-button>
+          <el-button type="success" @click="submitReTraining()">提交并训练</el-button>
           <el-dialog title="添加标签" :visible.sync="addLabelVisible" :modal-append-to-body="false" align='center'>
             <el-form :model="addDev" :rules="labelRules" ref="addDev">
               <el-row>
@@ -45,6 +46,18 @@
             </div>
           </el-dialog>
         </el-row>
+      </div>
+
+      <div class="mid_block">
+        <el-form :model="ruleForm" :rules="rules1" ref="ruleForm" label-width="140px">
+          <el-form-item label="模型权限" prop="isPublic">
+            <el-select v-model="ruleForm.isPublic" placeholder="请选择模型权限" id="isPublic"  style="width:200px">
+              <el-option label="公开" value=1></el-option>
+              <el-option label="隐藏" value=0></el-option>
+            </el-select>
+            <span class="notes">选择选择模型权限是否公开</span>
+          </el-form-item>
+        </el-form>
       </div>
 
       <div class="image_train_container">
@@ -94,7 +107,7 @@
 
       <div v-if="isSuccess == true" class = 'foot_block'>
         <el-table :data="outputData" style="width: 100%">
-          <el-table-column prop="trainAccuracy" label="训练准确度"align="center"></el-table-column>
+          <el-table-column prop="trainAccuracy" label="训练准确度" align="center"></el-table-column>
           <el-table-column prop="trainTime" label="训练用时(s)" align="center"></el-table-column>
         </el-table>
       </div>
@@ -149,13 +162,7 @@
         modelbasePath: '',        //我的模型库跳转路径
         tableData: [
         ],            //存储该模型所有标签、样本信息
-        labelRules:{
-          label:[
-            {required: true, message: '请输入标签名称', trigger: 'blur'},
-            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
-          ]
-        },
-        addDev: {                   //存储某一标签的训练数据
+        addDev: {                 //存储某一标签的训练数据
           label: '',                //标签名
           imageId:[],               //上传图片唯一ID
           imageName:[],             //存储样本名
@@ -167,12 +174,30 @@
           model_name: '',
           delete: '',
           label: '',
-          image_name: ''
+          img_name: ''
         },
         modelName: '',             //模型名
         outputData: [],            //存放训练模型的输出结果
-        trainStatus: '未训练',     //模型训练状态
-        isChange: 0,            //全局变量，用于判断数据表格是否发生变动
+        trainStatus: '',           //模型训练状态
+        ruleForm:{
+          isPublic:''              //模型是否公开
+        },
+        isChange: 0,               //全局变量，用于判断数据表格是否发生变动
+        labelRules:{
+          label:[
+            {required: true, message: '请输入标签名称', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
+          ]
+        },
+        rules1:{
+          isPublic:[
+            {
+              required: true,
+              trigger: 'change',
+              message: '请选择模型权限'
+            }
+          ]
+        },
         isSuccess: false,     //模型是否已经训练
         testOutput:'',              //测试结果
         uploadTestData:{                //图片文件附属信息
@@ -218,7 +243,7 @@
       }
 
       if(self.role == "teacher"){
-        this.modelbasePath = "/modelbaseTeacher";
+        self.modelbasePath = "/modelbaseTeacher";
       }
       else{
         self.modelbasePath = "/modelbaseStudent";
@@ -245,29 +270,47 @@
         console.log(error);
       });
 
-      var modelCreateData = JSON.stringify({
-        userName:self.account,
-        modelName:self.modelName,
-        modelType:'0'
+      var modelEditData = JSON.stringify({
+        username:self.account,
+        modelName:self.modelName
       })
-      axios.post(apiUrl.createImgModel,modelCreateData,{
+
+      axios.post(apiUrl.imageIfTrain,modelEditData,{
         headers:{"Content-Type": "application/json;charset=utf-8"}
       }).then(function (response) {
-        console.log(response);
-        if(response.data == "Create Image Model Success!"){
-          self.$message({
-            type: 'success',
-            message: "创建模型成功！"
-          });
+        if(response.data === "模型未训练"){
+          self.trainStatus = "未训练";
+        }else if(response.data === "模型训练中"){
+          self.trainStatus = "训练中";
+        }else {
+          self.trainStatus = "已训练";
+          self.isSuccess = true;
         }
-        else if(response.data == "Model Name Check Failed!"){
-          self.$alert('该模型名已存在，请转至编辑模型页面', '提示', {
-            confirmButtonText: '确定',
-            callback: action => {
-              window.location.href = self.modelbasePath;
-            }
-          });
+      }).catch(function (error) {
+        console.log(error);
+      });
+
+      axios.post(apiUrl.editImgModel,modelEditData,{
+        headers:{"Content-Type": "application/json;charset=utf-8"}
+      }).then(function (response) {
+        //训练数据恢复
+        var tmpTable = response.data.tableData;
+        if(response.data.publicStatus == '1'){
+          self.ruleForm.isPublic = '1';
         }
+        else{
+          self.ruleForm.isPublic = '0';
+        }
+        tmpTable.forEach(element => {
+          var tmpDev = {};
+          tmpDev.label = element.label;
+          tmpDev.imageName = element.image_name;
+          tmpDev.contents = element.contents;
+          tmpDev.imageId = element.image_id;
+          self.tableData.push(tmpDev);
+        })
+        console.log(self.tableData);
+
       }).catch(function (error) {
         console.log(error);
       });
@@ -323,7 +366,6 @@
         this.addDev.imageName = [];
         this.addDev.imageId = [];
         this.addLabelVisible = true;
-        this.isChange = 1;
       },
 
       addLabelConfirm(){
@@ -419,8 +461,8 @@
       selectTestImg(){
         // 将模型名、标签名跟随图片文件传送到Django后端
         const self = this;
-        self.uploadData.account = self.account;
-        self.uploadData.modelName = self.modelName;
+        self.uploadTestData.account = self.account;
+        self.uploadTestData.modelName = self.modelName;
       },
 
       beforeUpload(file){
@@ -428,16 +470,14 @@
         // 限制图片尺寸（不得过大或者过小）
         this.uploadData.delete = '0';
         this.uploadData.image_name = file.name;
-      },
-      handleErr(err, file, fileList){
-        alert(err);
+        self.isChange = 1;
       },
 
       handleSuccess(response, file, fileList){
-        if(response["save_status"] == "failed") {
+        if(response == "Name Check Failed!") {
           this.$message({
             type: 'error',
-            message: "文件上传失败"
+            message: "文件名重复，上传失败"
           });
           fileList.splice(fileList.indexOf(file),1);
         }
@@ -445,10 +485,8 @@
           // 将上传的图片信息（文件路径）存储在tableData中
           for(var item of this.tableData){
             if(item.label == this.uploadData.label){
-              item.imageId.push(response["image_id"]);
               item.imageName.push(file.name);
               item.contents.push(file.url);
-              console.log(this.tableData)
               break;
             }
           }
@@ -469,12 +507,134 @@
         }
       },
 
-      selectTestImg(){
-        // 将模型名、标签名跟随图片文件传送到Django后端
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+
+      handleRemove(file, fileList) {
         const self = this;
-        self.uploadTestData.account = self.account;
-        self.uploadTestData.modelName = self.modelName;
+        var deleteLabel = '';
+        for(var item of self.tableData){
+          for(var content of item.contents){
+            if(content == file.name){
+              item.contents.splice(item.contents.indexOf(content),1);
+              deleteLabel = item.label;
+            }
+          }
+        }
         self.isChange = 1;
+        //向后台发送请求，删除该图片文件（逻辑删除）
+        let formData = new FormData();
+        formData.append('modelName', self.modelName);
+        formData.append('delete', '1');
+        formData.append('label', deleteLabel);
+        formData.append('imgName', file.name);
+        axios.post(apiUrl.deleteImg,formData,{
+          headers:{"Content-Type": "application/json;charset=utf-8"}
+        }).then(function (response) {
+          if(response.data == "logic delete Success"){
+            self.$message({
+              type: 'success',
+              message: "图片删除成功"
+            });
+          }
+        }).catch(function (error) {
+          console.log(error);
+        });
+      },
+
+      submitReTraining(){
+        /** 提交并训练函数 */
+        const self = this;
+        var tmp = false;
+        if(this.tableData.length == 0){
+          this.$message({
+            type: 'error',
+            message: "训练数据不能为空"
+          });
+          tmp = true;
+        }
+        else if(this.tableData.length < 2){
+          this.$message({
+            type: 'error',
+            message: "训练标签数至少为2"
+          });
+          tmp = true;
+        }
+        else{
+          for (var item of this.tableData) {
+            if(item.contents.length == 0){
+              this.$message({
+                type: 'error',
+                message: "训练样本不能为空"
+              });
+              tmp = true;
+              break;
+            }
+          }
+        }
+        var labels = [];
+        for(var item of this.tableData){
+          labels.push(item.label);
+        }
+        //提交训练数据确认函数
+        if(tmp == false){
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              this.$confirm('是否提交?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                const loading = this.$loading({
+                  lock: true,
+                  text: '正在训练，请稍候...',
+                  spinner: 'el-icon-loading',
+                  background: 'rgba(0, 0, 0, 0.7)'
+                });
+                var uData = JSON.stringify({
+                  userName:this.account,
+                  modelName:this.modelName,
+                  label:labels,
+                  publicStatus:this.ruleForm.isPublic,
+                  isChange: this.isChange
+                })
+                axios.post(apiUrl.trainImgModel,uData,{
+                  headers:{"Content-Type": "application/json;charset=utf-8"}
+                }).then(function (response) {
+                  loading.close();
+                  if(response.data.train_result == "Success"){
+                    self.isSuccess = true;
+                    self.$message({
+                      type: 'success',
+                      message: "训练成功"
+                    });
+                    var tmp = {
+                      trainAccuracy: '',
+                      trainTime: ''
+                    }
+                    tmp.trainAccuracy = self.toPercent(Number(response.data.train_acc));
+                    tmp.trainTime = response.data.train_time;
+                    self.outputData = [];
+                    self.outputData.push(tmp);
+                  }
+                  else{
+                    self.isSuccess = false;
+                    self.$message({
+                      type: 'error',
+                      message: "训练失败"
+                    });
+                  }
+
+                  self.isChange = 0;
+                }).catch(function (error) {
+                  loading.close();
+                  console.log(error);
+                });
+              })
+            }
+          });
+        }
       },
 
       toPercent(point){
@@ -495,35 +655,33 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            var uData = JSON.stringify({
-              userName:this.account,
-              modelName:this.modelName,
-              isChange: this.isChange,
-              publicStatus: '1'
-            })
-            axios.post(apiUrl.publishImgModel,uData,{
-              headers:{"Content-Type": "application/json;charset=utf-8"}
-            }).then(function (response) {
-              var username = self.account;
-              if(username == ""){
-                this.$message({
-                  type: 'info',
-                  message: "您尚未登录"
-                });
-                window.location.href = "https://homepagetest.tuopinpin.com/";
-              }
-              else{
-                console.log("sdfasdfasd")
-                self.$router.push("/modelbaseTeacher");
-              }
+          var uData = JSON.stringify({
+            userName:this.account,
+            modelName:this.modelName,
+            isChange: this.isChange,
+            publicStatus: this.ruleForm.isPublic
+          })
+          axios.post(apiUrl.publishImgModel,uData,{
+            headers:{"Content-Type": "application/json;charset=utf-8"}
+          }).then(function (response) {
+            var username = self.account;
+            if(username == ""){
+              this.$message({
+                type: 'info',
+                message: "您尚未登录"
+              });
+              window.location.href = "https://homepagetest.tuopinpin.com/";
+            }
+            else{
+              console.log("sdfasdfasd")
+              self.$router.push("/modelbaseTeacher");
+            }
           }).catch(function (error) {
             console.log(error);
           });
           this.isChange = 0;
         }).catch(() => {});
       }
-
-
     }
   }
 
@@ -647,14 +805,6 @@
   }
   .add_label_button{
     margin-left: 100%;
-  }
-  .foot_block{
-    margin-top: 30px;
-    margin-left: 130px;
-  }
-  .test_block{
-    margin-top: 30px;
-    margin-left: 130px;
   }
 
 
