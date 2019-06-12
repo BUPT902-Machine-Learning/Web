@@ -104,6 +104,42 @@
         </div>
       </div>
 
+      <div v-if="isSuccess == true" class = 'foot_block'>
+        <el-table :data="outputData" style="width: 100%">
+          <el-table-column prop="trainAccuracy" label="训练准确度" align="center"></el-table-column>
+          <el-table-column prop="trainTime" label="训练用时(s)" align="center"></el-table-column>
+        </el-table>
+      </div>
+
+      <div v-if="isSuccess == true" class="test_block">
+        <el-form ref="testData" label-width="120px">
+          <el-form-item label="测试图片">
+            <el-upload
+              name="img"
+              class="upload-demo"
+              action="http://127.0.0.1:8082/api/image/testImageModel/"
+              :show-file-list=true
+              :on-success="handleTestSuccess"
+              :on-change="handleTestChange"
+              :file-list="fileTestList"
+              :data="uploadTestData"
+              list-type="picture"
+              align="left">
+              <div class="selectImg" align="left"><el-button type="primary" @click="selectTestImg()">提交测试</el-button></div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+
+        <el-form label-width="120px">
+          <el-form-item label="测试结果">
+            <el-col :span=8>
+              <span>{{testOutput}}</span>
+            </el-col>
+          </el-form-item>
+        </el-form>
+
+      </div>
+
     </div>
   </div>
 </template>
@@ -160,13 +196,20 @@
               message: '请选择模型权限'
             }
           ]
-        }
+        },
+        isSuccess: false,     //模型是否已经训练
+        testOutput:'',              //测试结果
+        uploadTestData:{                //图片文件附属信息
+          account: '',
+          modelName: ''
+        },
       }
     },
 
     mounted(){
       const self = this;
       self.modelName = self.$route.params.modelName;
+      self.testModelBuilder = self.$route.params.userName;
       var csrfTokenName = "csrftoken=";
       var tokenName = "token=";
       var userName = "username=";
@@ -241,6 +284,7 @@
           self.trainStatus = "训练中";
         }else {
           self.trainStatus = "已训练";
+          self.isSuccess = true;
         }
       }).catch(function (error) {
         console.log(error);
@@ -407,6 +451,13 @@
         self.isChange = 1;
       },
 
+      selectTestImg(){
+        // 将模型名、标签名跟随图片文件传送到Django后端
+        const self = this;
+        self.uploadTestData.account = self.testModelBuilder;
+        self.uploadTestData.modelName = self.modelName;
+      },
+
       beforeUpload(file){
         // 将逻辑删除标记、文件名跟随图片文件传送到Django后端
         // 限制图片尺寸（不得过大或者过小）
@@ -435,6 +486,18 @@
         }
         self.uploadData = {};
         self.isChange = 1;
+      },
+
+      handleTestSuccess(response, file, fileTestList){
+        const self = this;
+        self.testOutput = response;
+        self.uploadTestData = {};
+      },
+
+      handleTestChange(file, fileTestList){
+        if (fileTestList.length > 1){
+          fileTestList.splice(0, 1);
+        }
       },
 
       beforeRemove(file, fileList) {
@@ -522,10 +585,6 @@
                   spinner: 'el-icon-loading',
                   background: 'rgba(0, 0, 0, 0.7)'
                 });
-                // this.$message({
-                //   type: 'success',
-                //   message: "训练提交成功，正在训练！"
-                // });
                 var uData = JSON.stringify({
                   userName:this.account,
                   modelName:this.modelName,
@@ -537,6 +596,29 @@
                   headers:{"Content-Type": "application/json;charset=utf-8"}
                 }).then(function (response) {
                   loading.close();
+                  if(response.data.train_result == "Success"){
+                    self.isSuccess = true;
+                    self.$message({
+                      type: 'success',
+                      message: "训练成功"
+                    });
+                    var tmp = {
+                      trainAccuracy: '',
+                      trainTime: ''
+                    }
+                    tmp.trainAccuracy = self.toPercent(Number(response.data.train_acc));
+                    tmp.trainTime = response.data.train_time;
+                    self.outputData = [];
+                    self.outputData.push(tmp);
+                  }
+                  else{
+                    self.isSuccess = false;
+                    self.$message({
+                      type: 'error',
+                      message: "训练失败"
+                    });
+                  }
+
                   self.isChange = 0;
                 }).catch(function (error) {
                   loading.close();
@@ -546,7 +628,17 @@
             }
           });
         }
-      }
+      },
+
+      toPercent(point){
+        /** 百分比转换函数 */
+        if (point==0) {
+          return 0;
+        }
+        var str=Number(point*100).toFixed();
+        str+="%";
+        return str;
+      },
     }
   }
 
