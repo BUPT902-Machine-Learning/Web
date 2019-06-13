@@ -13,8 +13,11 @@
                     <el-button type="danger" size="small" @click="logout()">
                       注销
                     </el-button>
-                    <el-button type="warning" size="small" @click="myModelBase()">
+                    <el-button type="success" size="small" @click="myModelBase()">
                       我的模型库
+                    </el-button>
+                    <el-button type="warning" size="small" @click="myTurntoScratch()">
+                      进入scratch3
                     </el-button>
                   </ul>
                 </div>

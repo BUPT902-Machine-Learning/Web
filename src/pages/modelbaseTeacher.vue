@@ -13,8 +13,11 @@
                     <el-button type="danger" size="small" @click="logout()">
                       注销
                     </el-button>
-                    <el-button type="warning" size="small" @click="myModelBase()">
+                    <el-button type="success" size="small" @click="myModelBase()">
                       我的模型库
+                    </el-button>
+                    <el-button type="warning" size="small" @click="myTurntoScratch()">
+                      进入scratch3
                     </el-button>
                   </ul>
                 </div>
@@ -504,7 +507,7 @@ export default {
         },
         myTurntoScratch(){
             const self = this;
-            window.location.href = "http://10.103.243.232:8601?" + self.account + "&role=" + self.role + "&class_no=" + self.classId;
+            window.location.href = "https://scratch3test.tuopinpin.com/index.html?username=" + self.account + "&role=" + self.role + "&class_no=" + self.classId;
         },
         turntoScratch(row){
             window.location.href = "https://scratch3test.tuopinpin.com/index.html?username=" + row.StudentName + "&modelname=" + row.ModelName;
