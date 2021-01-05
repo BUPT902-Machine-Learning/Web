@@ -9,7 +9,7 @@
   },
   "repository": "https://github.com/fishenal/Vuejs-SalePlatform",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "blueimp-md5": "^2.10.0",
     "element-ui": "^2.4.8",
     "es6-promise": "^4.2.5",
