@@ -17,7 +17,7 @@
     "lodash": "^4.16.4",
     "md5": "^2.2.1",
     "promise-polyfill": "8.1.0",
-    "qs": "^6.5.2",
+    "qs": "^6.6.1",
     "socket.io-client": "^2.2.0",
     "vue": "^2.0.1",
     "vue-resource": "^1.0.3",
